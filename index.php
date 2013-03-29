@@ -4,7 +4,7 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <title>Giraffe</title>
 <?php
-    $jss = split("\n", file_get_contents("index.js"));
+    $jss = explode("\n", file_get_contents("index.js"));
     foreach( $jss as $js ) {
         $js = trim($js);
         if( empty($js) ) {
