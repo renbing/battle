@@ -44,7 +44,7 @@ Ajax.request = function (url, opt_options) {
     xhr.open(method, url, async);
     xhr.onreadystatechange = stateChangeHandler;
 
-    headers['X-Requested-With'] = 'XMLHttpRequest';
+    //headers['X-Requested-With'] = 'XMLHttpRequest';
     if(method == 'POST' && ! headers['Content-Type']) {
         headers['Content-Type'] = "application/x-www-form-urlencoded";
     }

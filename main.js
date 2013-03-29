@@ -44,7 +44,7 @@ function start() {
         soundManager.playBackground();
     }, 15);
     
-    Ajax.get("http://192.168.1.100/a.php", function(status, url, xhr) {
+    Ajax.get("http://192.168.1.127:8090/conf/global.dat", function(status, url, xhr) {
         trace('ajax get finished:' + status);
     });
 }
