@@ -7,16 +7,16 @@ function mainLoop(passed) {
 
 function main() {
     trace("main");
-    resourceManager.add("cubetexture.png", "image");
+    resourceManager.add("texture/cubetexture.png", "image");
     resourceManager.load(start);
 }
 
 function start() {
     trace('start');
-    soundManager.playBackground("home_music.mp3");
-    //soundManager.playEffect("winwinwin.mp3");
+    soundManager.playBackground("music/home_music.mp3");
+    //soundManager.playEffect("music/winwinwin.mp3");
     
-    var image = resourceManager.get("cubetexture.png");
+    var image = resourceManager.get("texture/cubetexture.png");
     var text = new TextField();
     //text.text = "我们我们我们我们我们我们我们我们我们";
     //text.height = 32;
