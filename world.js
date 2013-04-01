@@ -443,8 +443,8 @@ Building.prototype.harvest = function() {
     this.data.timer = now;
     if( this.data.id == "gold_mine" ) {
         global.soundManager.playEffect("coins_collect_01.wav");
-    }else if( this.data.id == "elixir_pump" ) {
-        global.soundManager.playEffect("elixir_collect_02.wav");
+    }else if( this.data.id == "oil_pump" ) {
+        global.soundManager.playEffect("oil_collect_02.wav");
     }
 };
 

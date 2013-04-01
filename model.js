@@ -4,21 +4,22 @@
 
 var User = {
     _id :   4
-    base :  {
-        xp          : 100,
-        score       : 100,
-        gold        : 15000000,
-        oil         : 15000000,
-        cash        : 1000000,
-        worker      : 2,
-        working     : 0,
-        oilmax      : 25000000,
-        goldmax     : 25000000,
-        troopmax    : 0,
+    name : '',          // 名字
+    base :  {         
+        honer      : 0,        // 荣誉
+        level       : 1,        // 荣誉等级
+        gold        : 15000000, // 金币
+        oil         : 15000000, // 石油
+        cash        : 1000000,  // 现金
+        worker      : 2,        // 工人
+        working     : 0,        // 工作中的工人
+        oilmax      : 25000000, // 石油上限
+        goldmax     : 25000000, // 金币上限
+        troopmax    : 0,        // 军队上限
     },
     
-    map :   {
-    /* id : {
+    map :   {       // 地图
+    /* corner : {   位置坐标 x*100+y
         bid         建筑ID
 
         level       等级
@@ -32,7 +33,7 @@ var User = {
     */
     },
 
-    troops : {
+    troops : {      // 军队
     /*
         marine : 10, 兵种:数量
     */
@@ -42,7 +43,24 @@ var User = {
     /*
         marine : 1, 兵种:等级
     */
-    }
+    },
+
+    battle : [
+    /* {
+            attacker:       // 袭击者
+            attacker_name:  // 袭击者名称
+            attacker_honor: // 袭击者荣誉
+            attacker_group: // 袭击者军团
+            troops: {}      // 投放的军队
+            gold:           // 被掠夺的金币
+            oil:            // 被掠夺的石油
+            time:           // 进攻时间
+            honer:          // 获得的荣誉
+            damage:         // 损失百分比
+            report:         // 战报
+            
+        }*/
+    ],
 };
 
 function Model(data) {
@@ -114,15 +132,15 @@ Model.prototype.updateHud = function(name, value) {
             newValue = this.base.goldmax;
         }
         hud.getChildAt(3).text = newValue + "/" + this.base.goldmax;
-    }else if( name == "elixir" ) {
-        if( this.base.elixir >= this.base.elixirmax && value > 0 ) {
+    }else if( name == "oil" ) {
+        if( this.base.oil >= this.base.oilmax && value > 0 ) {
             alert("石油满了");
             return false;
         }
-        if( newValue > this.base.elixirmax ) {
-            newValue = this.base.elixirmax;
+        if( newValue > this.base.oilmax ) {
+            newValue = this.base.oilmax;
         }
-        hud.getChildAt(5).text = newValue + "/" + this.base.elixirmax;
+        hud.getChildAt(5).text = newValue + "/" + this.base.oilmax;
     }else if( name == "working" ) {
         hud.getChildAt(7).text = newValue + "/" + this.base.worker;
     }else if( name == "cash" ) {
@@ -138,7 +156,7 @@ Model.prototype.updateHud = function(name, value) {
 
 Model.prototype.updateBuildingStatistic = function() {
     var goldMax = 0;
-    var elixirMax = 0;
+    var oilMax = 0;
     var troopMax = 0;
     
     this.buildingCount = {};
@@ -154,7 +172,7 @@ Model.prototype.updateBuildingStatistic = function() {
 
         var buildingConf = global.csv.building.get(id, level);
         goldMax += buildingConf.MaxStoredGold;
-        elixirMax += buildingConf.MaxStoredElixir;
+        oilMax += buildingConf.MaxStoredOil;
         troopMax += buildingConf.MaxStoredTroop;
 
         if( !this.buildingCount[id] ) {
@@ -168,11 +186,11 @@ Model.prototype.updateBuildingStatistic = function() {
     }
 
     //this.base.goldmax = goldMax;
-    //this.base.elixirmax = elixirMax;
+    //this.base.oilmax = oilMax;
     this.base.troopmax = troopMax;
 
     this.updateHud("gold", 0);
-    this.updateHud("elixir", 0);
+    this.updateHud("oil", 0);
 };
 
 Model.prototype.canWork = function() {
