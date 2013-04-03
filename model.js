@@ -3,7 +3,7 @@
  */
 
 var User = {
-    _id :   4
+    _id :   4,
     name : '',          // 名字
     base :  {         
         honer      : 0,        // 荣誉

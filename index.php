@@ -12,6 +12,15 @@
         }
         echo "    <script src='$js' type='text/javascript' charset='utf-8'></script>\n";
     }
+
+    $sizes = array('1024X768 iPad','960X640 iPhone','1136X640 iPhone5','1280X720 S3/Note2');
+    $defaultSize = $sizes[0];
+    if( isset($_REQUEST['size']) ){
+        $defaultSize = $_REQUEST['size'];
+    }
+    $segs = explode('X', $defaultSize);
+    $width = intval($segs[0]);
+    $height = intval($segs[1]);
 ?>
     <script src='framework/matrix4x4.js' type='text/javascript' charset='utf-8'></script>
     <script src='framework/touch.js' type='text/javascript' charset='utf-8'></script>
@@ -74,6 +83,11 @@
         var canvas,gl,glRender;
         var stage = new MovieClip("stage");
         var scaleFactor = 1;
+        var Device = {
+            width : <?= $width ?>,
+            height : <?= $height ?>,
+            name : 'webgl'
+        };
 
         function webGLStart() {
             canvas = document.getElementById("gl-canvas");
@@ -89,8 +103,6 @@
                 return;
             }
 
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
             //scaleFactor = canvas.width / parseInt(canvas.style.width);
             Touch.init();
@@ -105,7 +117,7 @@
                 var passed = now - lastTime;
                 lastTime = now;
                 counter += 1;
-
+                
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                 mainLoop(passed/1000);
 
@@ -141,7 +153,7 @@
             ctx.drawImage(data, 0, 0);
 
             gl.bindTexture(gl.TEXTURE_2D, image.texture);
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -180,8 +192,32 @@
 
     </script>
 </head>
-<body style="margin:0;padding:0" onload="webGLStart()">
-    <div style="float:left">FPS:</div><div id="fps" style="float:left">60</div>
-    <canvas id="gl-canvas" style="border:none;padding-left:20px;" width=960 height=640></canvas>
+<body style="margin-left:20px" onload="webGLStart()">
+    <script type="text/javascript">
+        function changeSize(){
+            var size = document.getElementById("size").value;
+            document.location.href = "?size="+size;
+        }
+    </script>
+
+    <div style="margin-left:300px">
+    <span>FPS:</span><span id="fps">60</span>
+    <span>分辨率:</span>
+    <select id="size" onchange="changeSize();">
+        <?php
+            foreach( $sizes as $size )
+            {
+                $selected = '';
+                if( $size == $defaultSize ) {
+                    $selected = 'selected=selected';
+                }
+                echo "<option value=\"$size\" $selected >$size</option>";
+            }
+        ?>
+    </select>
+    </div>
+    <div>
+        <canvas id="gl-canvas" style="border:none;" width=<?= $width ?> height=<?= $height ?>></canvas>
+    </div>
 </body>
 </html>

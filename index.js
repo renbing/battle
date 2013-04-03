@@ -3,6 +3,11 @@ framework/timer.js
 framework/ajax.js
 framework/event.js
 framework/tween.js
-framework/resource.js
 framework/sound.js
+framework/resource.js
+framework/texture.js
+model.js
+view/scene.js
+view/window.js
+config.js
 main.js

@@ -113,17 +113,18 @@ ResourceManager.prototype = {
                     maskImg.src = path.replace("\.png", "_a\.png");
                 }
             }else{
+                var pool = this.pool;
                 Ajax.get(path, function(path, type) {
-                        return function(status, url, xhr){
-                            if(type == "xml") {
-                                pool[path].data = new DOMParser().parseFromString(xhr.responseText, "text/xml");
-                            }else if(type == "json") {
-                                pool[path].data = eval("(" + xhr.responseText + ")");
-                            }else{
-                                pool[path].data = xhr.responseText;
-                            }
-                            loadProcessor.loadSuccess();
-                        };
+                    return function(status, url, xhr){
+                        if(type == "xml") {
+                            pool[path].data = new DOMParser().parseFromString(xhr.responseText, "text/xml");
+                        }else if(type == "json") {
+                            pool[path].data = eval("(" + xhr.responseText + ")");
+                        }else{
+                            pool[path].data = xhr.responseText;
+                        }
+                        loadProcessor.loadSuccess();
+                    };
                 }(path, type));
             }
         }

@@ -111,21 +111,21 @@ DisplayObject.prototype = {
 };
 
 function Bitmap(image, name, sx, sy, sw, sh, width, height) {
+    sx = sx || 0;
+    sy = sy || 0;
+    sw = sw || image.width;
+    sh = sh || image.height;
+
     this.name = name || "";
     this.image = image;
-    this.width = width || image.width;
-    this.height = height || image.height;
+    this.width = width || sw;
+    this.height = height || sh;
 
     this.anchorX = 0;
     this.anchorY = 0;
 
     this.vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
-
-    sx = sx || 0;
-    sy = sy || 0;
-    sw = sw || this.image.width;
-    sh = sh || this.image.height;
     
     var vertices = [0, this.height, this.width, this.height, 0, 0, this.width, 0];
 
@@ -136,10 +136,10 @@ function Bitmap(image, name, sx, sy, sw, sh, width, height) {
     this.tbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.tbo);
 
-    var uv = [  sx/this.image.POTWidth,      sy/this.image.POTHeight, 
-                (sx+sw)/this.image.POTWidth, sy/this.image.POTHeight,
-                sx/this.image.POTWidth,      (sy+sh)/this.image.POTHeight,
-                (sx+sw)/this.image.POTWidth, (sy+sh)/this.image.POTHeight];
+    var uv = [ sx/this.image.POTWidth,      (sy+sh)/this.image.POTHeight,
+                (sx+sw)/this.image.POTWidth, (sy+sh)/this.image.POTHeight,
+                sx/this.image.POTWidth,      sy/this.image.POTHeight, 
+                (sx+sw)/this.image.POTWidth, sy/this.image.POTHeight]
 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uv), gl.STATIC_DRAW);
     this.tbo.itemSize = 2;
@@ -185,7 +185,6 @@ Bitmap.prototype = {
         glRender.restore();
     },
 };
-
 
 function MovieClip(name, frameCount) {
     this.name = name || ""; 
