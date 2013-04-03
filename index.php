@@ -3,6 +3,10 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <title>Giraffe</title>
+    <script src='framework/matrix4x4.js' type='text/javascript' charset='utf-8'></script>
+    <script src='framework/touch.js' type='text/javascript' charset='utf-8'></script>
+    <script src='framework/Render.js' type='text/javascript' charset='utf-8'></script>
+    <script src='framework/MovieClip.js' type='text/javascript' charset='utf-8'></script>
 <?php
     $jss = explode("\n", file_get_contents("index.js"));
     foreach( $jss as $js ) {
@@ -22,10 +26,6 @@
     $width = intval($segs[0]);
     $height = intval($segs[1]);
 ?>
-    <script src='framework/matrix4x4.js' type='text/javascript' charset='utf-8'></script>
-    <script src='framework/touch.js' type='text/javascript' charset='utf-8'></script>
-    <script src='framework/Render.js' type='text/javascript' charset='utf-8'></script>
-    <script src='framework/MovieClip.js' type='text/javascript' charset='utf-8'></script>
     <script id="shader-fs" type="x-shader/x-fragment">
         precision mediump float;
         varying vec4 vColor;

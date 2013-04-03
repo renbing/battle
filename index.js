@@ -1,11 +1,13 @@
 framework/util.js
 framework/timer.js
 framework/ajax.js
+framework/csv.js
 framework/event.js
 framework/tween.js
 framework/sound.js
 framework/resource.js
 framework/texture.js
+text.js
 model.js
 view/scene.js
 view/window.js

@@ -6,15 +6,15 @@ var User = {
     _id :   4,
     name : '',          // 名字
     base :  {         
-        honer      : 0,        // 荣誉
+        honor       : 0,        // 荣誉
         level       : 1,        // 荣誉等级
-        gold        : 15000000, // 金币
-        oil         : 15000000, // 石油
-        cash        : 1000000,  // 现金
+        gold        : 15000,    // 金币
+        oil         : 15000,    // 石油
+        cash        : 10000,    // 现金
         worker      : 2,        // 工人
         working     : 0,        // 工作中的工人
-        oilmax      : 25000000, // 石油上限
-        goldmax     : 25000000, // 金币上限
+        oilmax      : 25000,    // 石油上限
+        goldmax     : 25000,    // 金币上限
         troopmax    : 0,        // 军队上限
     },
     
@@ -55,7 +55,7 @@ var User = {
             gold:           // 被掠夺的金币
             oil:            // 被掠夺的石油
             time:           // 进攻时间
-            honer:          // 获得的荣誉
+            honor:          // 获得的荣誉
             damage:         // 损失百分比
             report:         // 战报
             
@@ -107,53 +107,6 @@ Model.prototype.worldUpdate = function(oldCorner, building) {
     this.map[corner] = building.data;
 }
 
-Model.prototype.updateHud = function(name, value) {
-    var hud = global.stage.getChildByName("ui").getChildByName("hud");
-    name = name.toLowerCase();
-
-    var newValue = this.base[name] + value;
-    if( newValue < 0 ) {
-        alert(name + "不足:" + (-value));
-        return false;
-    }
-
-    if( name == "xp" ) {
-        var oldLevel = global.csv.level.getLevel(this.base.xp);
-        var newLevel = global.csv.level.getLevel(newValue);
-        var nextLevelXp = global.csv.level.getXp(newLevel+1);
-
-        hud.getChildAt(1).text = newLevel + " " + newValue + "/" + nextLevelXp;
-    }else if( name == "gold" ) {
-        if( this.base.gold >= this.base.goldmax && value > 0 ) {
-            alert("金币满了");
-            return false;
-        }
-        if( newValue > this.base.goldmax ) {
-            newValue = this.base.goldmax;
-        }
-        hud.getChildAt(3).text = newValue + "/" + this.base.goldmax;
-    }else if( name == "oil" ) {
-        if( this.base.oil >= this.base.oilmax && value > 0 ) {
-            alert("石油满了");
-            return false;
-        }
-        if( newValue > this.base.oilmax ) {
-            newValue = this.base.oilmax;
-        }
-        hud.getChildAt(5).text = newValue + "/" + this.base.oilmax;
-    }else if( name == "working" ) {
-        hud.getChildAt(7).text = newValue + "/" + this.base.worker;
-    }else if( name == "cash" ) {
-        hud.getChildAt(9).text = newValue;
-    }else if( name == "score" ) {
-        hud.getChildAt(11).text = newValue;
-    }
-
-    this.base[name]  = newValue;
-
-    return true;
-};
-
 Model.prototype.updateBuildingStatistic = function() {
     var goldMax = 0;
     var oilMax = 0;
@@ -185,12 +138,12 @@ Model.prototype.updateBuildingStatistic = function() {
         }
     }
 
-    //this.base.goldmax = goldMax;
-    //this.base.oilmax = oilMax;
+    this.base.goldmax = goldMax;
+    this.base.oilmax = oilMax;
     this.base.troopmax = troopMax;
-
-    this.updateHud("gold", 0);
-    this.updateHud("oil", 0);
+    
+    gScene.updateHud && gScene.updateHud('gold');
+    gScene.updateHud && gScene.updateHud('oil');
 };
 
 Model.prototype.canWork = function() {

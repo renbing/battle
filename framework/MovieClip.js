@@ -1,3 +1,11 @@
+function extend(Child, Parent) {
+    var childPrototype = Child.prototype;
+    Child.prototype = new Parent();
+    for( var key in childPrototype ) {
+        Child.prototype[key] = childPrototype[key];
+    }
+    Child.prototype.constructor = Child;
+}
 
 function TextField() {
     this.width = 128;
@@ -111,14 +119,14 @@ DisplayObject.prototype = {
     }
 };
 
-function Bitmap(image, name, sx, sy, sw, sh, width, height) {
+function Bitmap(texture, name, sx, sy, sw, sh, width, height) {
     sx = sx || 0;
     sy = sy || 0;
-    sw = sw || image.width;
-    sh = sh || image.height;
+    sw = sw || texture.width;
+    sh = sh || texture.height;
 
     this.name = name || "";
-    this.image = image;
+    this.texture = texture;
     this.width = width || sw;
     this.height = height || sh;
 
@@ -137,10 +145,10 @@ function Bitmap(image, name, sx, sy, sw, sh, width, height) {
     this.tbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.tbo);
 
-    var uv = [ sx/this.image.POTWidth,      (sy+sh)/this.image.POTHeight,
-                (sx+sw)/this.image.POTWidth, (sy+sh)/this.image.POTHeight,
-                sx/this.image.POTWidth,      sy/this.image.POTHeight, 
-                (sx+sw)/this.image.POTWidth, sy/this.image.POTHeight]
+    var uv = [ sx/this.texture.POTWidth,      (sy+sh)/this.texture.POTHeight,
+                (sx+sw)/this.texture.POTWidth, (sy+sh)/this.texture.POTHeight,
+                sx/this.texture.POTWidth,      sy/this.texture.POTHeight, 
+                (sx+sw)/this.texture.POTWidth, sy/this.texture.POTHeight]
 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uv), gl.STATIC_DRAW);
     this.tbo.itemSize = 2;

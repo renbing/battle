@@ -65,7 +65,7 @@ function Building(corner, data) {
     this.dx = 0;
     this.dy = 0;
 
-    this.buildingBaseConf = global.csv.building.get(this.data.id, 1);
+    this.buildingBaseConf = gConfBuilding[this.data.id][1];
     if( !this.buildingBaseConf ) {
         this.buildingBaseConf = global.csv.obstacle.get(this.data.id);
         this.buildingClass = "Obstacle";
@@ -76,7 +76,7 @@ function Building(corner, data) {
     this.name = this.buildingBaseConf.Name;
     this.size = this.buildingBaseConf.Width;
     
-    this.mc = new MovieClip(this.buildingClass + "Building_" + this.data.id);
+    this.mc = new MovieClip(corner);
 
     this.mc.addEventListener(Event.GESTURE_DRAG, this.onDrag.bind(this));
     this.mc.addEventListener(Event.GESTURE_DRAG_END, this.onDragEnd.bind(this));

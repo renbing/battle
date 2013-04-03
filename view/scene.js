@@ -1,8 +1,11 @@
 
 function MainScene() {
     this.view = null;
-    this.ui = null;
-    this.map = null;
+
+    this.mapView = null;
+    this.uiView = null;
+
+    this.ui = {};
 
     this.init();
 }
@@ -10,11 +13,11 @@ function MainScene() {
 MainScene.prototype = {
     init: function(){
         this.view = new MovieClip('main_scene');
-        this.map = new MovieClip('map');
-        this.ui = new MovieClip('ui');
+        this.mapView = new MovieClip('map');
+        this.uiView = new MovieClip('ui');
 
-        this.view.addChild(this.map);
-        this.view.addChild(this.ui);
+        this.view.addChild(this.mapView);
+        this.view.addChild(this.uiView);
 
         stage.addChild(this.view);
 
@@ -26,47 +29,52 @@ MainScene.prototype = {
         stage.removeChild(this.view);
     },
 
-    updateHud: function(){
-        var hud = global.stage.getChildByName("ui").getChildByName("hud");
+    updateHud: function(name, value){
         name = name.toLowerCase();
+        value = +value || 0;
 
-        var newValue = this.base[name] + value;
+        var newValue = gModel.base[name] + value;
         if( newValue < 0 ) {
-            alert(name + "不足:" + (-value));
+            alert(name + '不足:' + (-value));
+            return false;
+        }
+        
+        if( name == 'honor' ) {
+            this.ui.left_top.getChildByName('horner_text').texture.setText(newValue);
+        }else if( name == 'gold' ) {
+            if( gModel.base.gold >= gModel.base.goldmax && value > 0 ) {
+                alert('金币满了');
+                return false;
+            }
+            if( newValue > gModel.base.goldmax ) {
+                newValue = gModel.base.goldmax;
+            }
+            var text = '{0}/{0}'.format(newValue ,gModel.base.goldmax);
+            this.ui.right_top.getChildByName('gold_text').texture.setText(text);
+        }else if( name == 'oil' ) {
+            if( gModel.base.oil >= gModel.base.oilmax && value > 0 ) {
+                alert('石油满了');
+                return false;
+            }
+            if( newValue > gModel.base.oilmax ) {
+                newValue = gModel.base.oilmax;
+            }
+            var text = newValue + '/' + gModel.base.oilmax;
+            this.ui.right_top.getChildByName('oil_text').texture.setText(text);
+        }else if( name == 'working' || name == 'worker' ) {
+            var text = '{0}/{1}'.format(newValue, gModel.base.worker);
+            if( name == 'worker' ) {
+                text = '{0}/{1}'.format(gModel.base.working, newValue);
+            }
+            gModel.base.working + '/' + gModel.base.worker;
+            this.ui.middle_top.getChildByName('worker_text').texture.setText(text);
+        }else if( name == 'cash' ) {
+            this.ui.right_top.getChildByName('cash_text').texture.setText(newValue);
+        }else{
             return false;
         }
 
-        if( name == "xp" ) {
-            var oldLevel = global.csv.level.getLevel(this.base.xp);
-            var newLevel = global.csv.level.getLevel(newValue);
-            var nextLevelXp = global.csv.level.getXp(newLevel+1);
-
-            hud.getChildAt(1).text = newLevel + " " + newValue + "/" + nextLevelXp;
-        }else if( name == "gold" ) {
-            if( this.base.gold >= this.base.goldmax && value > 0 ) {
-                alert("金币满了");
-                return false;
-            }
-            if( newValue > this.base.goldmax ) {
-                newValue = this.base.goldmax;
-            }
-            hud.getChildAt(3).text = newValue + "/" + this.base.goldmax;
-        }else if( name == "oil" ) {
-            if( this.base.oil >= this.base.oilmax && value > 0 ) {
-                alert("石油满了");
-                return false;
-            }
-            if( newValue > this.base.oilmax ) {
-                newValue = this.base.oilmax;
-            }
-            hud.getChildAt(5).text = newValue + "/" + this.base.oilmax;
-        }else if( name == "working" ) {
-            hud.getChildAt(7).text = newValue + "/" + this.base.worker;
-        }else if( name == "cash" ) {
-            hud.getChildAt(9).text = newValue;
-        }else if( name == "score" ) {
-            hud.getChildAt(11).text = newValue;
-        }
+        gModel.base[name] = newValue;
     },
 
     _initUI: function(){
@@ -91,11 +99,23 @@ MainScene.prototype = {
         rightBottom.y = Device.height;
         rightBottom.getChildByName('shop').addEventListener(Event.TAP, this.gotoShop);
 
-        this.ui.addChild(leftTop);
-        this.ui.addChild(middleTop);
-        this.ui.addChild(rightTop);
-        this.ui.addChild(leftBottom);
-        this.ui.addChild(rightBottom);
+        this.uiView.addChild(leftTop);
+        this.uiView.addChild(middleTop);
+        this.uiView.addChild(rightTop);
+        this.uiView.addChild(leftBottom);
+        this.uiView.addChild(rightBottom);
+
+        this.ui.left_top = leftTop;
+        this.ui.middle_top = middleTop;
+        this.ui.right_top = rightTop;
+        this.ui.left_bottom = leftBottom;
+        this.ui.right_bottom = rightBottom;
+        
+        this.updateHud('gold');
+        this.updateHud('oil');
+        this.updateHud('cash');
+        this.updateHud('working');
+        this.updateHud('honor');
     },
 
     _initMap: function(){

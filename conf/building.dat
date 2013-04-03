@@ -1,0 +1,136 @@
+编号	等级	中文名	建筑类型	天数	小时	分钟	建造时间	需求资源类型	建造花费	需求总部等级	体积	体积	最大储金量	最大储油量	储兵量	生产的资源	每小时生产资源	生产资源最大量	生产队列最大长度	建筑物最大血量	攻击范围	攻击速度	伤害	受击范围	受击范围	是否可以对空	是否可以对地	最小攻击范围	溅射范围	击退
+ID	Level	Name	BuildingClass	BuildTimeD	BuildTimeH	BuildTimeM	BuildTime	BuildResource	BuildCost	TownHallLevel	Width	Height	MaxStoredGold	MaxStoredOil	HousingSpace	ProducesResource	ResourcePerHour	ResourceMax	UnitProduction	Hitpoints	AttackRange	AttackSpeed	Damage	BuildingW	BuildingH	AirTargets	GroundTargets	MinAttackRange	DamageRadius	PushBack
+troop_house	1	营地	Army			5	5	Oil	250	1	5	5			20					400				2	2					
+troop_house	2				1	0	60		2500	2					30					500										
+troop_house	3				3	0	180		10000	3					35					600										
+troop_house	4				8	0	480		100000	4					40					700										
+troop_house	5			1	0	0	1440		250000	5					45					800										
+troop_house	6			3	0	0	4320		750000	6					50					1000										
+troop_house	7			5	0	0	7200		2250000	9					55					1200										
+town_hall	1	基地	Town Hall			1	1	Gold	0		4	4	1000	1000						1500				3	3					
+town_hall	2					5	5		1000				1000	1000						1600										
+town_hall	3				3	0	180		4000				1000	1000						1850										
+town_hall	4			1	0	0	1440		25000				1000	1000						2100										
+town_hall	5			2	0	0	2880		150000				1000	1000						2400										
+town_hall	6			4	0	0	5760		750000				1000	1000						2800										
+town_hall	7			6	0	0	8640		1200000				1000	1000						3200										
+town_hall	8			8	0	0	11520		2000000				1000	1000						3700										
+town_hall	9			10	0	0	14400		4000000				1000	1000						4200										
+oil_pump	1	石油生产基地	Resource			1	1	Gold	150	1	3	3				Oil	200	500		400				2	2					
+oil_pump	2					5	5		300	1							400	1000		450										
+oil_pump	3					15	15		700	2							600	1500		500										
+oil_pump	4				1	0	60		1400	2							800	2500		550										
+oil_pump	5				4	0	240		3500	3							1000	10000		590										
+oil_pump	6				12	0	720		7000	3							1300	20000		610										
+oil_pump	7			1	0	0	1440		14000	4							1600	30000		630										
+oil_pump	8			2	0	0	2880		28000	4							1900	50000		660										
+oil_pump	9			3	0	0	4320		56000	5							2200	75000		680										
+oil_pump	10			4	0	0	5760		84000	5							2500	100000		710										
+oil_pump	11			5	0	0	7200		168000	7							3000	150000		750										
+oil_storage	1	石油储藏室	Resource			15	15	Gold	300	1	3	3		1500						400				2	2					
+oil_storage	2					30	30		750	2				3000						600										
+oil_storage	3				1	0	60		1500	2				6000						800										
+oil_storage	4				2	0	120		3000	3				12000						1000										
+oil_storage	5				3	0	180		6000	3				25000						1200										
+oil_storage	6				4	0	240		12000	3				50000						1500										
+oil_storage	7				6	0	360		25000	4				100000						1650										
+oil_storage	8				8	0	480		50000	4				250000						1740										
+oil_storage	9				12	0	720		100000	5				500000						1820										
+oil_storage	10			1	0	0	1440		250000	6				1000000						1920										
+oil_storage	11			2	0	0	2880		500000	7				2000000						2016										
+gold_mine	1	金矿	Resource			1	1	Oil	150	1	3	3				Gold	200	500		400				2	2					
+gold_mine	2					5	5		300	1							400	1000		450										
+gold_mine	3					15	15		700	2							600	1500		500										
+gold_mine	4				1	0	60		1400	2							800	2500		550										
+gold_mine	5				4	0	240		3000	3							1000	10000		590										
+gold_mine	6				12	0	720		7000	3							1300	20000		610										
+gold_mine	7			1	0	0	1440		14000	4							1600	30000		630										
+gold_mine	8			2	0	0	2880		28000	4							1900	50000		660										
+gold_mine	9			3	0	0	4320		56000	5							2200	75000		680										
+gold_mine	10			4	0	0	5760		84000	5							2500	100000		710										
+gold_mine	11			5	0	0	7200		168000	7							3000	150000		750										
+gold_storage	1	金币储藏室	Resource			15	15	Oil	300	1	3	3	1500							400				2	2					
+gold_storage	2					30	30		750	2			3000							600										
+gold_storage	3				1	0	60		1500	2			6000							800										
+gold_storage	4				2	0	120		3000	3			12000							1000										
+gold_storage	5				3	0	180		6000	3			25000							1200										
+gold_storage	6				4	0	240		12000	3			50000							1500										
+gold_storage	7				6	0	360		25000	4			100000							1650										
+gold_storage	8				8	0	480		50000	4			250000							1740										
+gold_storage	9				12	0	720		100000	5			500000							1820										
+gold_storage	10			1	0	0	1440		250000	6			1000000							1920										
+gold_storage	11			2	0	0	2880		500000	7			2000000							2016										
+barrack	1	兵营	Army			1	1	Oil	200	1	3	3							20	250				2	2					
+barrack	2					15	15		1000	1									25	270										
+barrack	3				2		120		2500	1									30	280										
+barrack	4				4	0	240		5000	2									35	290										
+barrack	5				10	0	600		10000	3									40	310										
+barrack	6				16	0	960		80000	4									45	320										
+barrack	7			1	0	0	1440		240000	5									50	340										
+barrack	8			2	0	0	2880		700000	6									55	350										
+barrack	9			4	0	0	5760		1500000	7									60	390										
+barrack	10			6	0	0	8640		2000000	8									75	420										
+laboratory	1	实验室	Army			30	30	Oil	25000	3	4	4								250				3	3					
+laboratory	2				5	0	300		50000	4										270										
+laboratory	3				12	0	720		90000	5										280										
+laboratory	4			1	0	0	1440		270000	6										290										
+laboratory	5			2	0	0	2880		540000	7										310										
+laboratory	6			4	0	0	5760		1080000	8										330										
+laboratory	7			5	0	0	7200		3000000	9										350										
+cannon	1	加农炮	Defense			1	1	Gold	250	1	3	3								400	900	800	9	2	2	0	1			
+cannon	2					15	15		1000	1										450			11							
+cannon	3					45	45		4000	2										500			15							
+cannon	4				2	0	120		16000	3										550			19							
+cannon	5				6	0	360		50000	4										590			25							
+cannon	6				12	0	720		100000	5										610			31							
+cannon	7			1	0	0	1440		200000	6										630			40							
+cannon	8			2	0	0	2880		400000	7										660			48							
+cannon	9			3		0	4320		800000	8										690			56							
+cannon	10			4		0	5760		1600000	8										750			65							
+cannon	11			5		0	7200		3200000	9										900			75							
+archer_tower	1	箭塔	Defense			15	15	Gold	1000	2	3	3								400	1000	1000	11	2	2	1	1			
+archer_tower	2					30	30		2000	2										450			15							
+archer_tower	3					45	45		5000	3										500			19							
+archer_tower	4				4	0	240		20000	4										550			25							
+archer_tower	5				12	0	720		80000	5										590			30							
+archer_tower	6			1	0	0	1440		180000	5										610			35							
+archer_tower	7			3	0	0	4320		360000	6										630			42							
+archer_tower	8			4	0	0	5760		720000	7										660			48							
+archer_tower	9			5	0	0	7200		1500000	8										690			56							
+archer_tower	10			6	0	0	8640		2500000	8										720			65							
+archer_tower	11			7	0	0	10080		5000000	9										750			75							
+wall	1	城墙	Wall			0	0	Gold	200	2	1	1								300										
+wall	2					0	0		1000	2	1	1								500										
+wall	3					0	0		5000	3	1	1								700										
+wall	4					0	0		10000	4										900										
+wall	5					0	0		30000	5										1400										
+wall	6					0	0		75000	6										2000										
+wall	7					0	0		200000	7										2500										
+wall	8					0	0		500000	8										3000										
+wall	9						0		1000000	9										4000										
+wall	10						0		3000000											5500										
+wizard_tower	1	法师塔	Defense		12	0	720	Gold	180000	5	3	3								620	700	1300	11	2	2	1	1		100	
+wizard_tower	2			1	0	0	1440		360000	5										660			13							
+wizard_tower	3			2	0	0	2880		720000	6										690			16							
+wizard_tower	4			4	0	0	5760		1280000	7										720			20							
+wizard_tower	5			6	0	0	8640		1960000	8										760			24							
+wizard_tower	6			8	0	0	11520		2680000	8										800			32							
+wizard_tower	7			10	0	0	14400		5360000	9										840			40							
+air_defense	1	防空塔	Defense		5	0	300	Gold	22500	4	3	3								800	1000	1000	80	2	2	1	0			
+air_defense	2			1	0	0	1440		90000	4										860			110							
+air_defense	3			3	0	0	4320		270000	5										900			140							
+air_defense	4			5	0	0	7200		540000	6										940			160							
+air_defense	5			6	0	0	8640		1080000	7										990			190							
+air_defense	6			8	0	0	11520		2160000	8										1040			230							
+air_defense	7			10	0	0	14400		6480000	9										1100			280							
+mortar	1	大炮	Defense		8	0	480	Gold	8000	3	3	3								400	1100	5000	4	2	2	0	1	400	150	1
+mortar	2				12	0	720		32000	4										450			5							
+mortar	3			1	0	0	1440		120000	5										500			6							
+mortar	4			2	0	0	2880		400000	6										550			7							
+mortar	5			4	0	0	5760		800000	7										590			8							
+mortar	6			5	0	0	7200		1600000	8										610			9							
+mortar	7			7	0	0	10080		3200000	9										640			11							
+alliance_castle	1	家族城堡	Army				0	Gold	40000	3	3	3			10					1000				2	2					
+alliance_castle	2				6	0	360		100000	4					15					1400										
+alliance_castle	3			1	0	0	1440		800000	6					20					2000										
+alliance_castle	4			2	0	0	2880		1800000	8					25					2600										

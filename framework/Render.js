@@ -185,7 +185,7 @@ RenderContextGL2.prototype = {
     },
 
     drawRect: function(bitmap) {
-        if( !bitmap.image.texture ) {
+        if( !bitmap.texture.texture ) {
             return;
         }
         var shaderProgram = this.swithProgram("texture");
@@ -197,7 +197,7 @@ RenderContextGL2.prototype = {
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, bitmap.tbo.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, bitmap.image.texture);
+        gl.bindTexture(gl.TEXTURE_2D, bitmap.texture.texture);
         gl.uniform1i(shaderProgram.sampleUniform, 0);
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, bitmap.vbo.numItems);

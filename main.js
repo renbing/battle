@@ -1,4 +1,5 @@
 var gModel,gScene;
+var gConfGlobal, gConfBuilding, gConfCharacter, gConfTownHall;
 
 function mainLoop(passed) {
     stage.render();
@@ -8,11 +9,24 @@ function mainLoop(passed) {
 
 function main() {
     trace("main");
-    textureManager.load(gConfig.mc, onTextureLoad);
+
+    resourceManager.add('conf/global.dat');
+    resourceManager.add('conf/building.dat');
+    resourceManager.add('conf/character.dat');
+    resourceManager.add('conf/townhall.dat');
+
+    textureManager.load(gConfig.mc, onResourceLoad);
+
     //test();
 }
 
-function onTextureLoad() {
+function onResourceLoad() {
+    // 处理配置文件 
+    gConfGlobal = new GlobalCSV('conf/global.dat');
+    gConfCharacter = new CommonCSV('conf/character.dat', ['ID', 'Level']);
+    gConfBuilding = new CommonCSV('conf/building.dat', ['ID', 'Level']);
+    gConfTownHall = new CommonCSV('conf/townhall.dat', ['ID', 'Level']);
+
     start();
 }
 
