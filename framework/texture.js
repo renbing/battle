@@ -55,6 +55,8 @@ TextureManager.prototype = {
                     text.font = child.size+'px sans-serif';
                     text.align = (child.align || "center");
                     //text.color = child.color;
+                    text.width = child.width;
+                    text.height = child.height;
                     text.render();
 
                     childMC = new Bitmap(text, child.id);

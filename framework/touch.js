@@ -58,20 +58,23 @@ var Touch = {
 
             var point = {x:e.offsetX || e.clientX, y:e.offsetY || e.clientY};
             var offset = {x:point.x - touch.lastPoint.x, y:point.y - touch.lastPoint.y};
-
+            
+            var event = null;
             if( touch.moved ) {
                 if( touch.drag ) {
-                    touch.enterObject.bubbleEvent(new Event(Event.DRAG_END, touch.enterPoint, offset));
+                    event = new Event(Event.DRAG_END, touch.enterPoint, offset);
                 }
                 if( touch.swipe ) {
-                    touch.enterObject.bubbleEvent(new Event(Event.SWIPE, touch.enterPoint, offset, touch.swipe));
+                    event = new Event(Event.SWIPE, touch.enterPoint, offset, touch.swipe);
                 }
             }else {
                 var clickOffset = calculateDistance(point, touch.enterPoint);
                 if( clickOffset <= 40 ) {
-                    touch.enterObject.bubbleEvent(new Event(Event.TAP, touch.enterPoint));
+                    event = new Event(Event.TAP, touch.enterPoint);
                 }
             }
+            //trace(event, touch.enterObject);
+            event && touch.enterObject.bubbleEvent(event);
 
             touch.drag = false;
             touch.swipe = false;

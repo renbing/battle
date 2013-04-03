@@ -67,6 +67,10 @@ DisplayObject.prototype = {
     },
 
     addEventListener: function(type, callback) {
+        // 处理prototype继承问题
+        if( !this.hasOwnProperty('eventBubbleCallBack') ) {
+            this.eventBubbleCallBack = {};
+        }
         this.eventBubbleCallBack[type] = callback;
     },
 
@@ -87,12 +91,9 @@ DisplayObject.prototype = {
 
                 return;
             }
-
         }
 
-        if( this.parent ) {
-            this.parent.bubbleEvent(e);
-        }
+        this.parent && this.parent.bubbleEvent(e);
     },
 
     hitTest: function(point) {
@@ -373,7 +374,7 @@ MovieClip.prototype = {
             return;
         }
 
-        for(var i=0,max=this.children.length; i<max; i++ ) {
+        for(var i=this.children.length-1; i>=0; i-- ) {
             var hited = this.children[i].hitTest(point);
             if( hited ) {
                 return hited;

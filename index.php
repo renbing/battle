@@ -79,7 +79,7 @@
     </script>
         
     <script type="text/javascript">
-        var trace = function(obj) {console.log(obj);}
+        var trace = function() {console.log.apply(console, arguments);}
         var canvas,gl,glRender;
         var stage = new MovieClip("stage");
         var scaleFactor = 1;

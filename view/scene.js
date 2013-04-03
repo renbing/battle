@@ -70,28 +70,43 @@ MainScene.prototype = {
     },
 
     _initUI: function(){
-        this.ui.addChild(textureManager.createMovieClip('ui', 'left_top'));
+        var leftTop = textureManager.createMovieClip('ui', 'left_top');
 
         var middleTop = textureManager.createMovieClip('ui', 'middle_top');
         middleTop.x = Device.width/2;
-        this.ui.addChild(middleTop);
+        middleTop.getChildByName('shop_btn1').addEventListener(Event.TAP, this.gotoShop);
+        middleTop.getChildByName('shop_btn2').addEventListener(Event.TAP, this.gotoShop);
 
         var rightTop = textureManager.createMovieClip('ui', 'right_top');
         rightTop.x = Device.width;
-        this.ui.addChild(rightTop);
+        rightTop.getChildByName('shop_btn').addEventListener(Event.TAP, this.gotoShop);
         
         var leftBottom = textureManager.createMovieClip('ui', 'left_bottom');
         leftBottom.y = Device.height;
-        this.ui.addChild(leftBottom);
+        leftBottom.getChildByName('battle').addEventListener(Event.TAP, this.gotoBattle);
+        leftBottom.getChildByName('battle').addEventListener(Event.TAP, this.gotoBattle);
 
         var rightBottom = textureManager.createMovieClip('ui', 'right_bottom');
         rightBottom.x = Device.width;
         rightBottom.y = Device.height;
-        this.ui.addChild(rightBottom);
+        rightBottom.getChildByName('shop').addEventListener(Event.TAP, this.gotoShop);
 
+        this.ui.addChild(leftTop);
+        this.ui.addChild(middleTop);
+        this.ui.addChild(rightTop);
+        this.ui.addChild(leftBottom);
+        this.ui.addChild(rightBottom);
     },
 
     _initMap: function(){
+    },
+
+    gotoShop: function(){
+        trace('gotoShop');
+    },
+
+    gotoBattle: function(){
+        trace('gotoBattle');
     },
 };
 
