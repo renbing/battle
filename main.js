@@ -1,5 +1,6 @@
 var gModel,gScene;
 var gConfGlobal, gConfBuilding, gConfCharacter, gConfTownHall;
+var gNetManager;
 
 function mainLoop(passed) {
     stage.render();
@@ -10,30 +11,56 @@ function mainLoop(passed) {
 function main() {
     trace("main");
 
-    resourceManager.add('conf/global.dat');
-    resourceManager.add('conf/building.dat');
-    resourceManager.add('conf/character.dat');
-    resourceManager.add('conf/townhall.dat');
+    var uid = null;
+    if( getUID ) {
+        uid = getUID();
+    }
+    if( !uid ) {
+        trace('no valid user id');
+        return;
+    }
 
-    textureManager.load(gConfig.mc, onResourceLoad);
+    gNetManager = new NetManager(uid);
+    gNetManager.call('user','login', {}, function(resp){
+        if( resp.data.user == null ) {
+            User._id = uid;
+            gNetManager.call('user', 'save', {'user':User}, function(resp){
+                if( resp.code != 0 ) {
+                    trace('user.save error');
+                }else{
+                    loadResource();
+                }
+            });
+        }else{
+            User = resp.data.user;
+            loadResource();
+        }
+    });
 
-    //test();
-}
+    function loadResource() {
+        resourceManager.add('conf/global.dat');
+        resourceManager.add('conf/building.dat');
+        resourceManager.add('conf/character.dat');
+        resourceManager.add('conf/townhall.dat');
 
-function onResourceLoad() {
-    // 处理配置文件 
-    gConfGlobal = new GlobalCSV('conf/global.dat');
-    gConfCharacter = new CommonCSV('conf/character.dat', ['ID', 'Level']);
-    gConfBuilding = new CommonCSV('conf/building.dat', ['ID', 'Level']);
-    gConfTownHall = new CommonCSV('conf/townhall.dat', ['ID', 'Level']);
+        textureManager.load(gConfig.mc, onResourceLoad);
+    }
 
-    start();
-}
+    function onResourceLoad() {
+        // 处理配置文件 
+        gConfGlobal = new GlobalCSV('conf/global.dat');
+        gConfCharacter = new CommonCSV('conf/character.dat', ['ID', 'Level']);
+        gConfBuilding = new CommonCSV('conf/building.dat', ['ID', 'Level']);
+        gConfTownHall = new CommonCSV('conf/townhall.dat', ['Level']);
 
-function start() {
-    trace('start');
-    gModel = new Model(User);
-    gScene = new MainScene();
+        start();
+    }
+
+    function start() {
+        trace('start');
+        gModel = new Model(User);
+        gScene = new MainScene();
+    }
 }
 
 

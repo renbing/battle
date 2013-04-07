@@ -198,6 +198,20 @@
             var size = document.getElementById("size").value;
             document.location.href = "?size="+size;
         }
+
+        function setUID(uid){
+            var date = new Date();
+            date.setTime(date.getTime()+1000*24*3600*1000);
+            document.cookie = "user={0};expires={1}".format(uid, date.toGMTString());
+        }
+
+        function getUID(){
+            var segs = document.cookie.split("="); 
+            if( segs.length > 0 ) {
+                return parseInt(segs[1]);
+            }
+            return null;
+        }
     </script>
 
     <div style="margin-left:300px">

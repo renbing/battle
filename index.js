@@ -12,4 +12,5 @@ model.js
 view/scene.js
 view/window.js
 config.js
+net.js
 main.js
