@@ -3,9 +3,15 @@ function MainScene() {
     this.view = null;
 
     this.mapView = null;
+    this.world = null;
     this.uiView = null;
 
     this.ui = {};
+
+    this.dragBounds = {};
+    this.scale = 0.5;
+    this.maxScale = 1;
+    this.minScale = 0.5;
 
     this.init();
 }
@@ -13,6 +19,7 @@ function MainScene() {
 MainScene.prototype = {
     init: function(){
         this.view = new MovieClip('main_scene');
+
         this.mapView = new MovieClip('map');
         this.uiView = new MovieClip('ui');
 
@@ -23,6 +30,8 @@ MainScene.prototype = {
 
         this._initUI();
         this._initMap();
+
+        this.onScale(this.scale);
     },
 
     destroy: function(){
@@ -119,6 +128,97 @@ MainScene.prototype = {
     },
 
     _initMap: function(){
+        this.mapView.x = Device.width/2;
+        this.mapView.y = Device.height/2;
+
+        var bg = textureManager.createMovieClip('building', 'bg');
+        bg.scaleX = bg.scaleY = 2.5;
+
+        var bgBitmap = bg.getChildAt(0).getChildAt(0);
+        this.minScale = Math.max(Device.width / (bgBitmap.width * bg.scaleX),
+                Device.height / (bgBitmap.height * bg.scaleY));
+
+        this.mapView.addChild(bg);
+
+        this.mapView.addEventListener(Event.DRAG, function(e){
+            var nx = this.mapView.x + e.move.x;
+            var ny = this.mapView.y + e.move.y;
+
+            if( nx > this.dragBounds.maxX ) {
+                nx = this.dragBounds.maxX;
+            }
+            if( nx < this.dragBounds.minX ) {
+                nx = this.dragBounds.minX;
+            }
+            if( ny > this.dragBounds.maxY ) {
+                ny = this.dragBounds.maxY;
+            }
+            if( ny < this.dragBounds.minY ) {
+                ny = this.dragBounds.minY;
+            }
+            this.mapView.x = nx;
+            this.mapView.y = ny;
+        }.bind(this));
+
+
+        this.world = new World();
+        this.mapView.addChild(this.world.view);
+
+        var building = new Building(0,{
+            id: 'town_hall',
+            level: 1,
+            state: 0,
+            timer: 0
+        });
+        gModel.mapAdd(building);
+
+        for( var corner in gModel.map ) {
+            var building = new Building(corner, gModel.map[corner]);
+            this.world.add(building);
+        }
+    },
+
+    onPinch: function(direction){
+        if( direction == Event.PINCH_OUT ) {
+            this.scale += 0.1;
+            if( this.scale >= this.maxScale ) {
+                this.scale = this.maxScale;
+            }
+        }else if( direction == Event.PINCH_IN ) {
+            this.scale -= 0.1;
+            if( this.scale <= this.minScale ) {
+                this.scale = this.minScale;
+            }
+        }
+
+        this.onScale(this.scale);
+    },
+
+    onScale: function(scale) {
+        this.mapView.scaleX = this.mapView.scaleY = scale;
+
+        var bg = this.mapView.getChildByName('bg');
+        var scale = bg.scaleX * this.mapView.scaleX;
+
+        var bgBitmap = bg.getChildAt(0).getChildAt(0);
+        this.dragBounds = {
+            minX: Device.width - bgBitmap.width*scale/2,
+            maxX: bgBitmap.width*scale/2,
+            minY: Device.height - bgBitmap.height*scale/2,
+            maxY: bgBitmap.height*scale/2
+        };
+
+        if( this.dragBounds.minX > this.mapView.x ) {
+            this.mapView.x = this.dragBounds.minX;
+        }else if( this.dragBounds.maxX < this.mapView.x ) {
+            this.mapView.x = this.dragBounds.maxX;
+        }
+
+        if( this.dragBounds.minY > this.mapView.y ) {
+            this.mapView.y = this.dragBounds.minY;
+        }else if( this.dragBounds.maxY < this.mapView.y ) {
+            this.mapView.y = this.dragBounds.maxY;
+        }
     },
 
     gotoShop: function(){

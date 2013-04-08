@@ -161,7 +161,7 @@ RenderContextGL2.prototype = {
     },
 
     scale: function(sx, sy) {
-        this.mvMatrix.scale(sx, sy, 0);
+        this.mvMatrix.scale(sx, sy, 1);
     },
 
     rotate: function(angle) {

@@ -17,3 +17,6 @@ Event.SWIPE_LEFT = 7;
 Event.SWIPE_RIGHT = 8;
 Event.SWIPE_UP = 9;
 Event.SWIPE_DOWN = 10;
+Event.PINCH = 11;
+Event.PINCH_IN = 12;
+Event.PINCH_OUT = 13;

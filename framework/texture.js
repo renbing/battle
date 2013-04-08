@@ -149,8 +149,8 @@ TextureManager.prototype = {
                 this._parseLib(libName, packConf.frames[i]);
             }
             resourceManager.remove(file);
-            this._loadLinks();
         }
+        this._loadLinks();
     },
 
     _parseLib: function(libName, frame){

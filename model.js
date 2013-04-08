@@ -20,7 +20,7 @@ var User = {
     
     map :   {       // 地图
     /* corner : {   位置坐标 x*100+y
-        bid         建筑ID
+        id          建筑ID
 
         level       等级
         state       状态 0正常1升级2生产
@@ -68,42 +68,37 @@ function Model(data) {
         this[key] = data[key];
     }
     
-    this.buildingCount = {};// 地图上的建筑物分类统计
+    this.buildingCount = {};    // 地图上的建筑物分类统计
     this.buildingMaxLevel = {}; // 地图上建筑最大等级
-    this.world = {};        // 地图上所有的building对象
-    this.houseSpace = 0;
+    this.houseSpace = 0;        // 兵力上限
     
     for( var id in this.troops ) {
-        var characterBaseConf = global.csv.character.get(id, 1);
+        var characterBaseConf = gConfCharacter[id][1];
         this.houseSpace += this.troops[id] * characterBaseConf.HousingSpace;
     }
 }
 
-Model.prototype.worldAdd = function(building) {
+Model.prototype.mapAdd = function(building) {
     var corner = building.ux * 100 + building.uy;
     
-    this.world[corner] = building;
     this.map[corner] = building.data;
     
     this.updateBuildingStatistic();
 }
 
-Model.prototype.worldRemove = function(building) {
+Model.prototype.mapRemove = function(building) {
     var corner = building.ux * 100 + building.uy;
 
-    delete this.world[corner];
     delete this.map[corner];
 
     this.updateBuildingStatistic();
 }
 
-Model.prototype.worldUpdate = function(oldCorner, building) {
+Model.prototype.mapUpdate = function(oldCorner, building) {
     var corner = building.ux * 100 + building.uy;
 
-    delete this.world[oldCorner];
     delete this.map[oldCorner];
 
-    this.world[corner] = building;
     this.map[corner] = building.data;
 }
 
@@ -115,15 +110,14 @@ Model.prototype.updateBuildingStatistic = function() {
     this.buildingCount = {};
     this.buildingMaxLevel = {};
 
-    for( var corner in this.world ) {
-        var building = this.world[corner];
-        if( building.buildingClass == "Obstacle" ) continue;
+    for( var corner in this.map ) {
+        var data = this.map[corner];
 
-        var id = building.data.id;
-        var level = building.data.level;
+        var id = data.id;
+        var level = data.level;
         if( level <= 0 ) continue;
 
-        var buildingConf = global.csv.building.get(id, level);
+        var buildingConf = gConfBuilding[id][level];
         goldMax += buildingConf.MaxStoredGold;
         oilMax += buildingConf.MaxStoredOil;
         troopMax += buildingConf.MaxStoredTroop;
@@ -142,8 +136,8 @@ Model.prototype.updateBuildingStatistic = function() {
     this.base.oilmax = oilMax;
     this.base.troopmax = troopMax;
     
-    gScene.updateHud && gScene.updateHud('gold');
-    gScene.updateHud && gScene.updateHud('oil');
+    gScene && gScene.updateHud && gScene.updateHud('gold');
+    gScene && gScene.updateHud && gScene.updateHud('oil');
 };
 
 Model.prototype.canWork = function() {

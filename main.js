@@ -63,6 +63,11 @@ function main() {
     }
 }
 
+// 处理缩放手势
+function onPinch(direction){
+    gScene && gScene.onPinch && gScene.onPinch(direction);
+}
+
 
 // -----------------------测试用---------------------------
 

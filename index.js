@@ -9,6 +9,8 @@ framework/resource.js
 framework/texture.js
 text.js
 model.js
+view/building.js
+view/world.js
 view/scene.js
 view/window.js
 config.js

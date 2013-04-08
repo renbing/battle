@@ -94,8 +94,8 @@ DisplayObject.prototype = {
         var callback = this.eventBubbleCallBack[e.type];
         if( callback ) {
             callback.call(this, e);
-            if( e.type == Event.GESTURE_DRAG || e.type == Event.GESTURE_SWIP || 
-                e.type == Event.GESTURE_DRAG_START || e.type == Event.GESTURE_DRAG_END ) {
+            if( e.type == Event.DRAG || e.type == Event.SWIPE || 
+                e.type == Event.DRAG_START || e.type == Event.DRAG_END ) {
 
                 return;
             }
