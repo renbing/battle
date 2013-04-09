@@ -14,6 +14,6 @@ NetManager.prototype = {
             }else{
                 trace('netManager req error:'+status);
             }
-        });
+        }, true);
     },
 };

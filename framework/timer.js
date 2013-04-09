@@ -8,6 +8,7 @@ function Timer(time, repeat, callback) {
 
 Timer.timers = {};
 Timer.counter = 1;
+Timer.ticks = [];
 
 Timer.setInterval = function(callback, time) {
     Timer.timers[++Timer.counter] = new Timer(time, true, callback);
@@ -44,3 +45,31 @@ Timer.update = function(passed) {
         delete Timer.timers[overdues[i]];
     }
 };
+
+Timer.addTick = function(tick){
+    Timer.ticks.push(tick);
+};
+
+Timer.removeTick = function(tick){
+    var index = Timer.ticks.indexOf(tick);
+    if( index < 0 ) {
+        return;
+    }
+
+    Timer.ticks.splice(index, 1);
+};
+
+Timer.setInterval(function(){
+    for( var i=0,max=Timer.ticks.length; i<max; i++ ) {
+        Timer.ticks[i]();
+    }
+}, 1);
+
+Timer.getTime = function() {
+    return Math.round(+(new Date()) / 1000);
+}
+
+Timer.getDate = function() {
+    var now = new Date();
+    return now.getFullYear() * 10000 + now.getMonth() * 100 + now.getDate();
+}

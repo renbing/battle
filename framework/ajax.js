@@ -69,17 +69,20 @@ Ajax.request = function (url, opt_options) {
     return xhr;
 };
 
-Ajax.get = function (url, callback) {
-    return Ajax.request(url, {'callback': callback});
+Ajax.get = function (url, callback, sync) {
+    var async = !sync;
+    return Ajax.request(url, {'callback': callback, 'async':async});
 };
 
-Ajax.post = function (url, data, callback) {
+Ajax.post = function (url, data, callback, sync) {
+    var async = !sync;
     return Ajax.request(
         url,
         {
             'callback': callback,
             'method': 'POST',
-            'data': data
+            'data': data,
+            'async': async,
         }
     );
 };

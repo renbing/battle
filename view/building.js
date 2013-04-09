@@ -24,14 +24,20 @@ function Building(corner, data) {
     
     this.view = new MovieClip(corner);
 
+    this.view.addEventListener(Event.DRAG_START, this.onDragStart.bind(this));
     this.view.addEventListener(Event.DRAG, this.onDrag.bind(this));
     this.view.addEventListener(Event.DRAG_END, this.onDragEnd.bind(this));
     this.view.addEventListener(Event.TAP, this.onClick.bind(this));
+
+    this.tipView = null;
 
     this.update();
 }
 
 Building.prototype = {
+    onDragStart: function(e) {
+        gScene.logicMap 
+    },
 
     onDrag: function(e) {
         this.dx += e.move.x/gScene.scale;
@@ -65,7 +71,9 @@ Building.prototype = {
         
         this.ux = ux;
         this.uy = uy;
+
         this.updatePosition();
+        gScene.world.adjustDepth(this);
     },
 
     onDragEnd: function(e) {
@@ -94,6 +102,10 @@ Building.prototype = {
         global.map.addRect(this.ux, this.uy, this.size, this.size);
         global.graph.update(this.ux, this.uy, this.size, this.size, GraphNodeType.WALL);
         */
+
+        var oldCorner = this.sux * 100 + this.suy;
+        gModel.mapUpdate(oldCorner, this);
+
         this.sux = this.ux;
         this.suy = this.uy;
 
@@ -101,48 +113,34 @@ Building.prototype = {
     },
 
     onClick: function(e) {
-        return;
-        var now = Math.round(+new Date() / 1000);
-        var actions = [];
+        var actions = ['info'];
+
+        var now = Timer.getTime();
         if( this.data.state == BuildingState.UPGRADE ) {
-            actions.push([UI.BuildingActionType.CANCEL]);
-            actions.push([UI.BuildingActionType.ACCELERATE, {cash:5}]);
-        }
-        else if( this.data.state == BuildingState.CLEAR ) {
-            actions.push([UI.BuildingActionType.ACCELERATE, {cash:5}]);
-        }
-        else if( this.data.state == BuildingState.RESEARCH ) {
-            actions.push([UI.BuildingActionType.CANCEL]);
-            actions.push([UI.BuildingActionType.ACCELERATE, {cash:5}]);
-        }
-        else if( this.data.state == BuildingState.PRODUCE ) {
-            if( (now - this.data.timer) < 30 ) {
-                var upgradeCost = this.getUpgradeCost();
-                upgradeCost && actions.push([UI.BuildingActionType.UPGRADE, upgradeCost]);
-            }else {
-                // 收取资源
+            actions = ['info', 'cancel', 'cash'];
+        }else if( this.data.state == BuildingState.CLEAR ) {
+            actions = ['cancel'];
+        }else if( this.data.state == BuildingState.RESEARCH ) {
+            actions = ['info', 'upgrade'];
+        }else if( this.data.state == BuildingState.PRODUCE ) {
+            if( (now - this.data.timer) > 30 ) {
                 this.harvest();
                 return;
             }
-        }
-        else if( this.data.state == BuildingState.NORMAL || this.data.state == BuildingState.TRAIN ) {
-            if( this.buildingClass == "Obstacle" ) {
-                actions.push([UI.BuildingActionType.CLEAR, {resource:this.buildingBaseConf.ClearResource, num:this.buildingBaseConf.ClearCost}]);
-            }else {
-                var upgradeCost = this.getUpgradeCost();
-                upgradeCost && actions.push([UI.BuildingActionType.UPGRADE, upgradeCost]);
-                if( this.buildingClass == "Army" ) {
-                    actions.push([UI.BuildingActionType.TRAIN]);
-                }else if( this.buildingClass == "Laboratory" ) {
-                    actions.push([UI.BuildingActionType.RESEARCH]);
-                }
+            actions = ['info', 'upgrade'];
+        }else if( this.data.state == BuildingState.NORMAL ) {
+            if( this.data.id == 'barrack' ) {
+                actions = ['info', 'boost', 'upgrade', 'train'];
+            }else if( this.data.id == 'labratory' ) {
+                actions = ['info', 'upgrade', 'research'];
+            }else{
+                actions = ['info', 'upgrade'];
             }
+        }else if( this.data.state == BuildingState.TRAIN ) {
+            actions = ['info', 'upgrade'];
         }
-
-        if( actions.length > 0 ) {
-            global.windows.building_action.update(actions, this);
-            global.windows.building_action.show();
-        }
+        
+        gActionWindow.open(this, actions);
     },
 
     // 更新位置显示
@@ -152,32 +150,11 @@ Building.prototype = {
         //trace(this.ux, this.uy, this.view.x, this.view.y);
     },
 
-    // 调整景深
-    adjustDepth: function(){
-        var world = this.view.parent;
-        world.removeChild(this.view);
-
-        var mcs = world.getChildren();
-        var index = 0;
-        for( var i=0; i<mcs.length; i++ ) {
-            if( mcs[i].y > this.view.y ) {
-                index = i;
-                break;
-            }
-        }
-
-        if( i == mcs.length ) {
-            world.addChild(this.view);
-        }else{
-            world.addChildAt(this.view, index);
-        }
-    },
-
     // 获取升级需要的资源
     getUpgradeCost: function() {
         var buildingLevelConf = gConfBuilding[this.data.id][this.data.level+1];
         if( !buildingLevelConf ) {
-            alert("已经达到最大等级");
+            trace('已经达到最大等级');
             return;
         }
 
@@ -187,52 +164,49 @@ Building.prototype = {
 
     // 升级
     upgrade: function() {
-        if( this.buildingClass == "Obstacle" ) return;
-
         if( this.data.state == BuildingState.UPGRADE ) return;
-        if( !global.model.canWork() ) return;
+        if( !gModel.canWork() ) return;
 
         var upgradeCost = this.getUpgradeCost();
         if( !upgradeCost ) return;
 
-        var buildingLevelConf = global.csv.building.get(this.data.id, this.data.level+1);
-        if( this.data.id != "town_hall" && buildingLevelConf.TownHallLevel > global.model.buildingMaxLevel.townhall ){
-            alert("主建筑等级不够");
+        var buildingLevelConf = gConfBuilding[this.data.id][this.data.level+1];
+        if( this.data.id != 'town_hall' && 
+            buildingLevelConf.TownHallLevel > gModel.buildingMaxLevel.townhall ){
+            trace('主建筑等级不够');
             return;
         }
 
-        if( !global.model.updateHud(upgradeCost.resource, -upgradeCost.num) ) {
+        if( !gScene.updateHud(upgradeCost.resource, -upgradeCost.num) ) {
             return;
         }
 
-        var now = Math.round(+new Date() / 1000);
+        var now = Timer.getTime();
         this.data.timer = now + buildingLevelConf.BuildTime * 60;
         this.data.state = BuildingState.UPGRADE;
 
-        global.model.updateHud("working", 1);
-
-        return true;
+        gScene.updateHud('working', 1);
     },
 
     // 升级结束
     upgraded: function() {
-        if( this.buildingClass == "Obstacle" ) return;
+        if( this.buildingClass == 'Obstacle' ) return;
 
         // 升级结束,开始生产
-        var now = Math.round(+new Date() / 1000);
+        var now = Timer.getTime();
 
         this.data.level += 1;
         this.data.state = BuildingState.NORMAL;
         
-        if( this.buildingBaseConf.BuildingClass == "Resource" ) {
+        if( this.buildingBaseConf.BuildingClass == 'Resource' ) {
             this.data.state = BuildingState.PRODUCE;
             this.data.timer = now;
-        }else if( this.buildingBaseConf.BuildingClass == "Army" ) {
+        }else if( this.buildingBaseConf.BuildingClass == 'Army' ) {
             this.training();
         }
 
-        global.model.updateHud("working", -1);
-        global.model.updateBuildingStatistic();
+        gScene.updateHud('working', -1);
+        gModel.updateBuildingStatistic();
 
         this.update();
     },
@@ -240,25 +214,25 @@ Building.prototype = {
     // 加速升级,清理,研究等
     accelerate: function() {
         if( this.data.state == BuildingState.UPGRADE ) {
-            if( !global.model.updateHud("cash", -5) ) return;
+            if( !gScene.updateHud('cash', -5) ) return;
             this.upgraded();
         }else if( this.data.state == BuildingState.CLEAR ) {
-            if( !global.model.updateHud("cash", -5) ) return;
+            if( !gScene.updateHud('cash', -5) ) return;
             this.deleted();
         }else if( this.data.state == BuildingState.RESEARCH ) {
-            if( !global.model.updateHud("cash", -5) ) return;
+            if( !gScene.updateHud('cash', -5) ) return;
             this.researched();    
         }else if( this.data.state == BuildingState.TRAIN ) {
-            if( !global.model.updateHud("cash", -5) ) return;
+            if( !gScene.updateHud('cash', -5) ) return;
 
             var task = this.data.task;
             for( var i=0; i<task.length; i++ ) {
                 var character = task[i][0];
                 var num = task[i][1];
-                if( !global.model.troops[character] ) {
-                    global.model.troops[character] = num;
+                if( !gModel.troops[character] ) {
+                    gModel.troops[character] = num;
                 }else {
-                    global.model.troops[character] += num;
+                    gModel.troops[character] += num;
                 }
             }
 
@@ -276,45 +250,62 @@ Building.prototype = {
 
             var building = textureManager.createMovieClip('building', this.data.id);
             this.view.addChild(building);
+
+            var tip = new TextField();
+            tip.width = 128;
+            tip.height = 32;
+            tip.align = 'center';
+            tip.font = '18px sans-serif';
+            tip.render();
             
+            this.tipView = new Bitmap(tip, 'tip');
+            this.tipView.x = -64;
+            this.tipView.y = -100;
+            this.tipView.visible = false;
+
+            this.view.addChild(this.tipView);
+            
+            Timer.addTick(this.onTick.bind(this));
         }else{
             // 更新建筑显示 
             this.view.getChildAt(1).gotoAndStop(1);
         }
         
         this.updatePosition();
+        this.onTick();
     },
 
     // 每秒钟的状态更新
     onTick: function() {
-        var now = Math.round(+new Date() / 1000);
-        var tip = this.view.getChildByName("tip");
+        var now = Timer.getTime();
+        var tip = this.tipView;
+        var tipText = tip.texture;
         tip.visible = true;
 
         if( this.data.state == BuildingState.UPGRADE ) {
             if( now < this.data.timer ) {
-                tip.getChildAt(0).text = "建造/升级 剩余时间:" + (this.data.timer - now);
+                tipText.setText('升级:' + (this.data.timer - now));
             }else{
                 this.upgraded();
                 tip.visible = false;
             }
         }else if( this.data.state == BuildingState.PRODUCE ) {
-                tip.getChildAt(0).text = "生产时间:" + (now - this.data.timer);
+            tipText.setText('生产:' + (now - this.data.timer));
         }else if( this.data.state == BuildingState.CLEAR ) {
             if( now < this.data.timer ) {
-                tip.getChildAt(0).text = "清理 剩余时间:" + (this.data.timer - now);
+                tipText.setText('清理 剩余时间:' + (this.data.timer - now));
             }else{
                 this.deleted();
             }
         }else if( this.data.state == BuildingState.TRAIN ) {
             if( now < this.data.timer ) {
-                tip.getChildAt(0).text = "训练 剩余时间:" + (this.data.timer - now);
+                tipText.setText('训练 剩余时间:' + (this.data.timer - now));
             }else{
                 tip.visible = this.trained();
             }
         }else if( this.data.state == BuildingState.RESEARCH ) {
             if( now < this.data.timer ) {
-                tip.getChildAt(0).text = "研究 剩余时间:" + (this.data.timer - now);
+                tipText.setText('研究 剩余时间:' + (this.data.timer - now));
             }else{
                 this.researched();
                 tip.visible = false;
@@ -327,73 +318,79 @@ Building.prototype = {
     harvest: function() {
         if( this.data.state != BuildingState.PRODUCE ) return;
 
-        var buildingLevelConf = global.csv.building.get(this.data.id, this.data.level);
+        var buildingLevelConf = gConfBuilding[this.data.id][this.data.level];
         
-        var now = Math.round(+new Date() / 1000);
+        var now = Timer.getTime();
         var produceSeconds = now - this.data.timer;
         var output = Math.round(buildingLevelConf.ResourcePerHour * produceSeconds / 3600);
         if( output > buildingLevelConf.ResourceMax ) {
             output = +buildingLevelConf.ResourceMax;
         }
 
-        if( !global.model.updateHud(this.buildingBaseConf.ProducesResource, output) ) return;
+        gScene.updateHud(this.buildingBaseConf.ProducesResource, output);
 
         this.data.timer = now;
-        if( this.data.id == "gold_mine" ) {
-            global.soundManager.playEffect("coins_collect_01.wav");
-        }else if( this.data.id == "oil_pump" ) {
-            global.soundManager.playEffect("oil_collect_02.wav");
+        if( this.data.id == 'gold_mine' ) {
+            //soundManager.playEffect('coins_collect_01.wav');
+        }else if( this.data.id == 'oil_pump' ) {
+            //soundManager.playEffect('oil_collect_02.wav');
         }
+        this.onTick();
     },
 
     clear: function() {
-        if( this.buildingClass != "Obstacle" ) return;
+        if( this.buildingClass != 'Obstacle' ) return;
 
-        var now = Math.round(+new Date() / 1000);
-        if( !global.model.updateHud(this.buildingBaseConf.ClearResource, -this.buildingBaseConf.ClearCost) ) return;
+        var now = Timer.getTime();
+        var costResource = this.buildingBaseConf.ClearResource;
+        var costNum = -this.buildingBaseConf.ClearCost;
+        if( !gScene.updateHud(costResource, costNum) ) return;
 
         this.data.state = BuildingState.CLEAR;
         this.data.timer = now + this.buildingBaseConf.ClearTimeSeconds;
 
-        global.model.updateHud("working", 1);
+        gScene.updateHud('working', 1);
     },
 
     cancel: function() {
-        var now = Math.round(+new Date() / 1000);
+        this.data.state = BuildingState.NORMAL;
 
         if( this.data.state == BuildingState.UPGRADE ) {
-            this.data.state = BuildingState.NORMAL;
-            if( this.buildingClass == "Resource" ) {
+            if( this.buildingBaseConf.BuildingClass == 'Resource' ) {
                 this.data.state = BuildingState.PRODUCE;
-                this.data.timer = now;
+                this.data.timer = 0;
             }
-            global.model.updateHud("working", -1);
-        }else if( this.data.state == BuildingState.RESEARCH ) {
-            this.data.state = BuildingState.NORMAL;
-            this.data.timer = 0;
+            gScene.updateHud('working', -1);
+
+            // 还钱
+            var upgradeCost = this.getUpgradeCost()
+            upgradeCost.num = Math.round(-upgradeCost.num/2);
+            gScene.updateHud(upgradeCost.resource, upgradeCost.num);
         }
     },
 
     research: function(character) {
-        if( this.data.id != "laboratory" ) return;
+        if( this.data.id != 'laboratory' ) return;
         if( this.data.state != BuildingState.NORMAL ) return;
 
-        var now = Math.round(+new Date() / 1000);
+        var now = Timer.getTime();
 
-        var level = global.model.laboratory[character];
+        var level = gModel.laboratory[character];
         if( !level ) {
-            global.model.laboratory[character] = 1;
+            gModel.laboratory[character] = 1;
             level = 1;
         }
 
         var characterLevelConf = global.csv.character.get(character, level + 1);
         if( !characterLevelConf ) {
-            alert("无法升级,以及达到顶级");
+            trace('无法升级,以及达到顶级');
             return;
         }
 
         var characterBaseConf = global.csv.character.get(character, 1);
-        if( !global.model.updateHud(characterBaseConf.UpgradeResource, -characterLevelConf.UpgradeCost) ) {
+        var costResource = characterBaseConf.UpgradeResource;
+        var costNum = -characterLevelConf.UpgradeCost;
+        if( !gScene.updateHud(costResource, costNum) ) {
             return;
         }
 
@@ -403,10 +400,10 @@ Building.prototype = {
     },
 
     researched: function() {
-        if( this.data.id != "laboratory" ) return;
+        if( this.data.id != 'laboratory' ) return;
         if( this.data.state != BuildingState.RESEARCH ) return;
 
-        global.model.laboratory[this.data.research] += 1;
+        gModel.laboratory[this.data.research] += 1;
         this.data.state = BuildingState.NORMAL;
         this.data.timer = 0;
     },
@@ -434,10 +431,14 @@ Building.prototype = {
         }
 
         var characterBaseConf = global.csv.character.get(character, 1);
-        var characterLevel = global.model.laboratory[character];
+        var characterLevel = gModel.laboratory[character];
         var characterLevelConf = global.csv.character.get(character, characterLevel);
 
-        if( !global.model.updateHud(characterBaseConf.TrainingResource, -characterLevelConf.TrainingCost*num) ) return;
+        var costResource = characterBaseConf.TrainingResource;
+        var costNum = -characterLevelConf.TrainingCost*num;
+        if( !gScene.updateHud(costResource, costNum) ) {
+            return;
+        }
         
         if( taskIndex < 0 ) {
             task.push([character, num]);
@@ -463,10 +464,10 @@ Building.prototype = {
             this.data.timer = 0;
         }else {
             var character = this.data.task[0][0];
-            var level = global.model.laboratory[character] ? global.model.laboratory[character] : 1;
+            var level = gModel.laboratory[character] ? gModel.laboratory[character] : 1;
             var characterLevelConf = global.csv.character.get(character, level);
 
-            var now = Math.round(+new Date() / 1000);
+            var now = Timer.getTime();
             this.data.state = BuildingState.TRAIN;
             this.data.timer = now + characterLevelConf.TrainingTime;
             this.data.train = character;
@@ -474,8 +475,8 @@ Building.prototype = {
     },
 
     trained: function() {
-        if( global.model.houseSpace >= global.model.base.troopmax ) {
-            trace("没有更多的人口空间");
+        if( gModel.houseSpace >= gModel.base.troopmax ) {
+            trace('没有更多的人口空间');
             return;
         }
 
@@ -497,14 +498,84 @@ Building.prototype = {
         }
 
         var characterBaseConf = global.csv.character.get(character, 1);
-        global.model.houseSpace += characterBaseConf.HousingSpace;
-        if( !global.model.troops[character] ) {
-            global.model.troops[character] = 1;
+        gModel.houseSpace += characterBaseConf.HousingSpace;
+        if( !gModel.troops[character] ) {
+            gModel.troops[character] = 1;
         }else {
-            global.model.troops[character] += 1;
+            gModel.troops[character] += 1;
         }
 
         this.data.state = BuildingState.NORMAL;
         this.training();
     },
+
+    info: function() {
+    },
+};
+
+function ActionWindow(){
+    this.view = null;
+
+    this.actionViews = {};
+    this.actionWidth = 0;
+    this.actionSpanWidth = 10;
+
+    this.building = null;
+    this.opened = false;
+
+    this.init();
+}
+
+ActionWindow.prototype = {
+    init: function() {
+        this.view = new MovieClip('action_window');
+        this.view.visible = false;
+        this.view.x = Device.width/2;
+        this.view.y = Device.height - 100;
+
+        var actions = ['info', 'upgrade', 'cancel', 'boost', 'cash', 'train'];
+        actions.forEach(function(action){
+            var view = textureManager.createMovieClip('ui', 'action_'+action); 
+            view.addEventListener(Event.TAP, function(e){
+                this.building[action]();
+                this.close();
+            }.bind(this));
+            this.actionViews[action] = view;
+            this.view.addChild(view);
+        }, this);
+
+        this.actionWidth = this.actionViews['info'].getChildAt(0).getChildAt(0).width;
+
+        stage.addChild(this.view);
+    },
+
+    open: function(building, actions){
+        if( building == this.building && this.opened){
+            this.close();
+            return;
+        }
+
+        this.building = building;
+
+        for(var action in this.actionViews) {
+            this.actionViews[action].visible = false;
+        }
+
+        this.view.visible = true;
+        this.opened = true;
+        
+        var width = actions.length * this.actionWidth 
+                    + (actions.length-1)*this.actionSpanWidth;
+        var startX = -width/2;
+        actions.forEach(function(action, i){
+            var view = this.actionViews[action]; 
+            view.x = startX + i*(this.actionWidth + this.actionSpanWidth);
+            view.visible = true;
+        }, this);
+    },
+
+    close: function(){
+        this.view.visible = false;
+        this.opened = false;
+    }
 };

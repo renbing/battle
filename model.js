@@ -64,12 +64,12 @@ var User = {
 };
 
 function Model(data) {
-    for( var key in data ) {
+    for( var key in User ) {
         this[key] = data[key];
     }
     
-    this.buildingCount = {};    // 地图上的建筑物分类统计
-    this.buildingMaxLevel = {}; // 地图上建筑最大等级
+    this.buildingCount = {},    // 地图上的建筑物分类统计
+    this.buildingMaxLevel = {}, // 地图上建筑最大等级
     this.houseSpace = 0;        // 兵力上限
     
     for( var id in this.troops ) {
@@ -78,73 +78,98 @@ function Model(data) {
     }
 }
 
-Model.prototype.mapAdd = function(building) {
-    var corner = building.ux * 100 + building.uy;
-    
-    this.map[corner] = building.data;
-    
-    this.updateBuildingStatistic();
-}
+Model.prototype = {
+    save: function(){
+        var user = {};
+        for( var key in User ) {
+            user[key] = this[key];
+        }
+        gNetManager.call('user', 'save', {'user':user}, function(resp){
+            if( resp.code != 0 ) {
+                trace('user.save error');
+            }else{
+                trace('user.save success');
+            }
+        });
+    },
 
-Model.prototype.mapRemove = function(building) {
-    var corner = building.ux * 100 + building.uy;
+    mapAdd: function(building) {
+        var corner = building.ux * 100 + building.uy;
+        
+        this.map[corner] = building.data;
+        
+        this.updateBuildingStatistic();
+    },
 
-    delete this.map[corner];
+    mapRemove: function(building) {
+        var corner = building.ux * 100 + building.uy;
 
-    this.updateBuildingStatistic();
-}
+        delete this.map[corner];
 
-Model.prototype.mapUpdate = function(oldCorner, building) {
-    var corner = building.ux * 100 + building.uy;
+        this.updateBuildingStatistic();
+    },
 
-    delete this.map[oldCorner];
+    mapUpdate: function(oldCorner, building) {
+        var corner = building.ux * 100 + building.uy;
 
-    this.map[corner] = building.data;
-}
+        delete this.map[oldCorner];
 
-Model.prototype.updateBuildingStatistic = function() {
-    var goldMax = 0;
-    var oilMax = 0;
-    var troopMax = 0;
-    
-    this.buildingCount = {};
-    this.buildingMaxLevel = {};
+        this.map[corner] = building.data;
+    },
 
-    for( var corner in this.map ) {
-        var data = this.map[corner];
+    updateBuildingStatistic: function() {
+        var goldMax = 0;
+        var oilMax = 0;
+        var troopMax = 0;
+        var working = 0;
+        
+        this.buildingCount = {};
+        this.buildingMaxLevel = {};
 
-        var id = data.id;
-        var level = data.level;
-        if( level <= 0 ) continue;
+        for( var corner in this.map ) {
+            var data = this.map[corner];
 
-        var buildingConf = gConfBuilding[id][level];
-        goldMax += buildingConf.MaxStoredGold;
-        oilMax += buildingConf.MaxStoredOil;
-        troopMax += buildingConf.MaxStoredTroop;
+            if( data.state == BuildingState.UPGRADE || data.state == BuildingState.CLEAR ) {
+                working += 1;
+            }
 
-        if( !this.buildingCount[id] ) {
+            if( !data.level ) return;
+            var level = data.level;
+            var id = data.id;
+
+            var buildingConf = gConfBuilding[id][level];
+            goldMax += buildingConf.MaxStoredGold;
+            oilMax += buildingConf.MaxStoredOil;
+            troopMax += buildingConf.HousingSpace;
+
+            if( !this.buildingCount[id] ) {
+                this.buildingCount[id] = 0;
+            }
             this.buildingCount[id] = 0;
+
+            if( !this.buildingMaxLevel[id] || this.buildingMaxLevel[id] < level ) {
+                this.buildingMaxLevel[id] = level;
+            }
         }
-        this.buildingCount[id] = 0;
 
-        if( !this.buildingMaxLevel[id] || this.buildingMaxLevel[id] < level ) {
-            this.buildingMaxLevel[id] = level;
+        this.base.goldmax = goldMax;
+        this.base.oilmax = oilMax;
+        this.base.troopmax = troopMax;
+        this.base.working = working;
+        
+        if( gScene && gScene.updateHud ) {
+            gScene.updateHud('gold');
+            gScene.updateHud('oil');
+            gScene.updateHud('working');
         }
-    }
+    },
 
-    this.base.goldmax = goldMax;
-    this.base.oilmax = oilMax;
-    this.base.troopmax = troopMax;
-    
-    gScene && gScene.updateHud && gScene.updateHud('gold');
-    gScene && gScene.updateHud && gScene.updateHud('oil');
-};
+    canWork: function() {
+        if( this.base.working >= this.base.worker ) {
+            trace("没有更多的工人");
+            return false;
+        }
 
-Model.prototype.canWork = function() {
-    if( this.base.working >= this.base.worker ) {
-        alert("没有更多的工人");
-        return false;
-    }
-
-    return true;
+        return true;
+    },
 };

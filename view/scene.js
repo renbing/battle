@@ -5,6 +5,7 @@ function MainScene() {
     this.mapView = null;
     this.world = null;
     this.uiView = null;
+    this.logicMap = new LogicMap(World.unitW, World.unitH);
 
     this.ui = {};
 
@@ -32,6 +33,7 @@ MainScene.prototype = {
         this._initMap();
 
         this.onScale(this.scale);
+        gModel.updateBuildingStatistic();
     },
 
     destroy: function(){
@@ -44,7 +46,7 @@ MainScene.prototype = {
 
         var newValue = gModel.base[name] + value;
         if( newValue < 0 ) {
-            alert(name + '不足:' + (-value));
+            trace(name + '不足:' + (-value));
             return false;
         }
         
@@ -52,17 +54,17 @@ MainScene.prototype = {
             this.ui.left_top.getChildByName('horner_text').texture.setText(newValue);
         }else if( name == 'gold' ) {
             if( gModel.base.gold >= gModel.base.goldmax && value > 0 ) {
-                alert('金币满了');
+                trace('金币满了');
                 return false;
             }
             if( newValue > gModel.base.goldmax ) {
                 newValue = gModel.base.goldmax;
             }
-            var text = '{0}/{0}'.format(newValue ,gModel.base.goldmax);
+            var text = '{0}/{1}'.format(newValue, gModel.base.goldmax);
             this.ui.right_top.getChildByName('gold_text').texture.setText(text);
         }else if( name == 'oil' ) {
             if( gModel.base.oil >= gModel.base.oilmax && value > 0 ) {
-                alert('石油满了');
+                trace('石油满了');
                 return false;
             }
             if( newValue > gModel.base.oilmax ) {
@@ -84,6 +86,7 @@ MainScene.prototype = {
         }
 
         gModel.base[name] = newValue;
+        return true;
     },
 
     _initUI: function(){
@@ -164,14 +167,6 @@ MainScene.prototype = {
         this.world = new World();
         this.mapView.addChild(this.world.view);
 
-        var building = new Building(0,{
-            id: 'town_hall',
-            level: 1,
-            state: 0,
-            timer: 0
-        });
-        gModel.mapAdd(building);
-
         for( var corner in gModel.map ) {
             var building = new Building(corner, gModel.map[corner]);
             this.world.add(building);
@@ -227,6 +222,31 @@ MainScene.prototype = {
 
     gotoBattle: function(){
         trace('gotoBattle');
+    },
+
+    buyBuilding: function(id){
+        if( !(id in gConfBuilding) ) {
+            return;
+        }
+
+        var buildingConf = gConfBuilding[id][1];
+        
+        var data = {
+            id: id,
+            level: 1,
+            state: 0,
+            timer: 0
+        };
+
+        if( id == 'laboratory' ) {
+            data.research = 0;
+        }else if( id == 'barrack' ) {
+            data.task = [];
+        }
+
+        var building = new Building(0, data);
+        gModel.mapAdd(building);
+        this.world.add(building);
     },
 };
 

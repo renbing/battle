@@ -27,3 +27,12 @@ String.prototype.format = function()
         return args[i];
     });
 }
+
+function getTime() {
+    return Math.round(+(new Date()) / 1000);
+}
+
+function getDate() {
+    var now = new Date();
+    return now.getFullYear() * 10000 + now.getMonth() * 100 + now.getDate();
+}

@@ -27,7 +27,7 @@ oil_pump	8			2	0	0	2880		28000	4							1900	50000		660
 oil_pump	9			3	0	0	4320		56000	5							2200	75000		680										
 oil_pump	10			4	0	0	5760		84000	5							2500	100000		710										
 oil_pump	11			5	0	0	7200		168000	7							3000	150000		750										
-oil_storage	1	Ê¯ÓÍ´¢²ØÊÒ	Resource			15	15	Gold	300	1	3	3		1500						400				2	2					
+oil_storage	1	Ê¯ÓÍ´¢²ØÊÒ	ResourceStorage			15	15	Gold	300	1	3	3		1500						400				2	2					
 oil_storage	2					30	30		750	2				3000						600										
 oil_storage	3				1	0	60		1500	2				6000						800										
 oil_storage	4				2	0	120		3000	3				12000						1000										
@@ -49,7 +49,7 @@ gold_mine	8			2	0	0	2880		28000	4							1900	50000		660
 gold_mine	9			3	0	0	4320		56000	5							2200	75000		680										
 gold_mine	10			4	0	0	5760		84000	5							2500	100000		710										
 gold_mine	11			5	0	0	7200		168000	7							3000	150000		750										
-gold_storage	1	½ð±Ò´¢²ØÊÒ	Resource			15	15	Oil	300	1	3	3	1500							400				2	2					
+gold_storage	1	½ð±Ò´¢²ØÊÒ	ResourceStorage			15	15	Oil	300	1	3	3	1500							400				2	2					
 gold_storage	2					30	30		750	2			3000							600										
 gold_storage	3				1	0	60		1500	2			6000							800										
 gold_storage	4				2	0	120		3000	3			12000							1000										

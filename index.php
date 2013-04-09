@@ -212,6 +212,14 @@
             }
             return null;
         }
+
+        window.onunload = function(){
+            gModel.save();
+        };
+
+        window.onbeforeunload = function(){
+            gModel.save();   
+        };
     </script>
 
     <div style="margin-left:300px">

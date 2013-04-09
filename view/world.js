@@ -49,6 +49,8 @@ function World() {
     this.view = new MovieClip('world');
     this.view.x = -574*2.5;
     this.view.y = -58*2.5;
+
+    this.items = [];
 }
 
 World.unitX = 72;   // X轴单位格大小
@@ -58,8 +60,25 @@ World.unitH = 40;   // 逻辑高度
 
 World.prototype = {
     add: function(building){
-        this.view.addChild(building.view);
+        for( var i=0,max=this.items.length; i<max; i++ ) {
+            if( this.items[i].view.y > building.view.y ) {
+                break;
+            }
+        }
+
+        this.items.splice(i, 0, building);
+        this.view.addChildAt(building.view, i);
     },
     
-};
+    adjustDepth: function(building){
+        var index = this.items.indexOf(building);
+        if( index < 0 ) {
+            return;
+        }
+         
+        this.items.splice(index, 1);
+        this.view.removeChildAt(index);
 
+        this.add(building);
+    },
+};

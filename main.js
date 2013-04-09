@@ -1,6 +1,7 @@
 var gModel,gScene;
 var gConfGlobal, gConfBuilding, gConfCharacter, gConfTownHall;
 var gNetManager;
+var gActionWindow;
 
 function mainLoop(passed) {
     stage.render();
@@ -60,6 +61,8 @@ function main() {
         trace('start');
         gModel = new Model(User);
         gScene = new MainScene();
+
+        gActionWindow = new ActionWindow();
     }
 }
 
@@ -67,7 +70,6 @@ function main() {
 function onPinch(direction){
     gScene && gScene.onPinch && gScene.onPinch(direction);
 }
-
 
 // -----------------------测试用---------------------------
 
