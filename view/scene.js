@@ -33,7 +33,6 @@ MainScene.prototype = {
         this._initMap();
 
         this.onScale(this.scale);
-        gModel.updateBuildingStatistic();
     },
 
     destroy: function(){
@@ -171,6 +170,8 @@ MainScene.prototype = {
             var building = new Building(corner, gModel.map[corner]);
             this.world.add(building);
         }
+
+        gModel.updateBuildingStatistic();
     },
 
     onPinch: function(direction){

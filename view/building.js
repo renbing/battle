@@ -31,6 +31,7 @@ function Building(corner, data) {
 
     this.tipView = null;
 
+    this.viewInited = false;
     this.update();
 }
 
@@ -243,7 +244,7 @@ Building.prototype = {
 
     // 更新显示
     update: function() {
-        if( this.view.children.length == 0 ) {
+        if( !this.viewInited ) {
             // 初始化
             var base = textureManager.createMovieClip('building', 'base'+this.size);
             this.view.addChild(base);
@@ -273,6 +274,8 @@ Building.prototype = {
         
         this.updatePosition();
         this.onTick();
+
+        this.viewInited = true;
     },
 
     // 每秒钟的状态更新

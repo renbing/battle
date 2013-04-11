@@ -10,12 +10,13 @@ function mainLoop(passed) {
 }
 
 function main() {
-    trace("main");
+    trace('main');
 
     var uid = null;
-    if( getUID ) {
+    if( typeof(getUID) == 'function' ) {
         uid = getUID();
     }
+
     if( !uid ) {
         trace('no valid user id');
         return;
@@ -74,26 +75,26 @@ function onPinch(direction){
 // -----------------------测试用---------------------------
 
 function test() {
-    resourceManager.add("texture/cubetexture.png", "image");
+    resourceManager.add('texture/cubetexture.png', 'image');
     resourceManager.load(onTestLoad);
 }
 
 function onTestLoad() {
     trace('start');
-    soundManager.playBackground("music/home_music.mp3");
-    //soundManager.playEffect("music/winwinwin.mp3");
+    soundManager.playBackground('music/home_music.mp3');
+    //soundManager.playEffect('music/winwinwin.mp3');
     
-    var image = resourceManager.get("texture/cubetexture.png");
+    var image = resourceManager.get('texture/cubetexture.png');
     var text = new TextField();
-    //text.text = "我们我们我们我们我们我们我们我们我们";
+    //text.text = '我们我们我们我们我们我们我们我们我们';
     //text.height = 32;
     text.width = 256;
     //text.height = 256;
     text.render();
 
-    var bitmap = new Bitmap(image, "bitmap");
-    var bitmap2 = new Bitmap(text, "bitmap2");
-    var bitmap3 = new Bitmap(image, "bitmap3");
+    var bitmap = new Bitmap(image, 'bitmap');
+    var bitmap2 = new Bitmap(text, 'bitmap2');
+    var bitmap3 = new Bitmap(image, 'bitmap3');
     bitmap3.y = 100;
     bitmap3.x = 200;
     bitmap2.y = 150;
@@ -118,7 +119,7 @@ function onTestLoad() {
         soundManager.playBackground();
     }, 15);
     
-    Ajax.get("http://192.168.1.127:8090/conf/global.dat", function(status, url, xhr) {
+    Ajax.get('http://192.168.1.127:8090/conf/global.dat', function(status, url, xhr) {
         trace('ajax get finished:' + status);
     });
     */

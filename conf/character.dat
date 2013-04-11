@@ -1,4 +1,4 @@
-±àºÅ	µÈ¼¶	Ãû³Æ	Õ¼ÓÃÈË¿Ú	ËùĞè±øÓªµÈ¼¶	ÊµÑéÊÒµÈ¼¶	ËÙ¶È	ÉúÃüÖµ	ÑµÁ·Ê±¼ä	ÑµÁ·ËùĞèÏûºÄ×ÊÔ´ÀàĞÍ	ÑµÁ·ÏûºÄÊı¶î	Éı¼¶ËùĞèÊ±¼ä£¨Ğ¡Ê±£©	Éı¼¶ËùĞè×ÊÔ´ÀàĞÍ	Éı¼¶ÏûºÄÊı¶î	¹¥»÷·¶Î§	¹¥»÷ËÙ¶È	ÉËº¦	ÉËº¦°ë¾¶	Ê×Òª¹¥»÷½¨ÖşÎïÀàĞÍ	ÊÇ·ñ·ÉĞĞ	ÊÇ·ñ¿ÉÒÔ¶Ô¿Õ	ÊÇ·ñ¿ÉÒÔ¶ÔµØ	ÔË¶¯Æ«ÒÆÁ¿	ÔË¶¯Æ«ÒÆËÙ¶È
+ç¼–å·	ç­‰çº§	åç§°	å ç”¨äººå£	æ‰€éœ€å…µè¥ç­‰çº§	å®éªŒå®¤ç­‰çº§	é€Ÿåº¦	ç”Ÿå‘½å€¼	è®­ç»ƒæ—¶é—´	è®­ç»ƒæ‰€éœ€æ¶ˆè€—èµ„æºç±»å‹	è®­ç»ƒæ¶ˆè€—æ•°é¢	å‡çº§æ‰€éœ€æ—¶é—´ï¼ˆå°æ—¶ï¼‰	å‡çº§æ‰€éœ€èµ„æºç±»å‹	å‡çº§æ¶ˆè€—æ•°é¢	æ”»å‡»èŒƒå›´	æ”»å‡»é€Ÿåº¦	ä¼¤å®³	ä¼¤å®³åŠå¾„	é¦–è¦æ”»å‡»å»ºç­‘ç‰©ç±»å‹	æ˜¯å¦é£è¡Œ	æ˜¯å¦å¯ä»¥å¯¹ç©º	æ˜¯å¦å¯ä»¥å¯¹åœ°	è¿åŠ¨åç§»é‡	è¿åŠ¨åç§»é€Ÿåº¦
 ID	Level	Name	HousingSpace	BarrackLevel	LaboratoryLevel	Speed	Hitpoints	TrainingTime	TrainingResource	TrainingCost	UpgradeTimeH	UpgradeResource	UpgradeCost	AttackRange	AttackSpeed	Damage	DamageRadius	PreferedTargetBuildingClass	IsFlying	AirTargets	GroundTargets	MovementOffsetAmount	MovementOffsetSpeed
 barbarian	1		1	1	1	200	45	20	Oil	25	6	Oil	50000	40	1000	8			0	0	1	0	0
 barbarian	2				1		54			40	24		150000			11							

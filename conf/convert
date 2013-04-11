@@ -1,0 +1,10 @@
+#!/bin/bash
+for file in *.dat
+do
+    iconv -f gbk -t utf8 $file >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo $file
+        iconv -f gbk -t utf8 $file >tmp
+        mv tmp $file
+    fi
+done

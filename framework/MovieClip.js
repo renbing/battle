@@ -199,7 +199,7 @@ function MovieClip(name, frameCount) {
     this.name = name || ""; 
     this.totalFrames = frameCount || 1;
     this.currentFrame = 1;
-    this.isStoped = false;
+    this.isStoped = true;
 
     this.frames = [
         null   // 占位符,这样就可以直接使用this.frames[framecursor]
@@ -375,6 +375,8 @@ MovieClip.prototype = {
         }
 
         glRender.restore();
+
+        (!this.isStoped) && this.nextFrame();
     },
 
     hitTest: function(point) {
