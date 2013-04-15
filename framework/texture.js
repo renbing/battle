@@ -1,5 +1,6 @@
 function TextureManager() {
     this.pool = {};
+    this.callback = null;
 }
 
 TextureManager.prototype = {

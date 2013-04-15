@@ -82,7 +82,6 @@ ResourceManager.prototype = {
     },
 
     load: function(onAllLoad, onLoad) {
-
         var loadProcessor = new LoadProcessor(onAllLoad, onLoad);
         for(var path in this.underLoad) {
             this.pool[path] = this.underLoad[path];
@@ -127,8 +126,9 @@ ResourceManager.prototype = {
             }
         }
         
-        loadProcessor.start();
+        // 注意下面两行代码执行顺序不能交换,因为存在全部加载都不是异步的情况
         this.underLoad = {};
+        loadProcessor.start();
     },
 };
 

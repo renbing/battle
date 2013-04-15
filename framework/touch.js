@@ -4,16 +4,21 @@ var Touch = {
         canvas.addEventListener("mousedown", handleMouseDown, true);
         canvas.addEventListener("mousemove", handleMouseMove, true);
         canvas.addEventListener("mouseup", handleMouseUp, true);
-        canvas.addEventListener("mouseout", handleMouseUp, true);
+        canvas.addEventListener("mouseout", handleMouseOut, true);
         canvas.addEventListener("mousewheel", handleMouseWheel, true);
 
-        var touch = new Object();
+        var touch = {};
+
+        function getTouchPoint(e) {
+            return {x:e.offsetX || (e.pageX-canvas.offsetLeft), y:e.offsetY || (e.pageY-canvas.offsetTop)};
+        }
 
         function handleMouseDown(e) {
+            var point = getTouchPoint(e);
+
             touch.moved = false;
             touch.enterObject = null;
 
-            var point = {x:e.offsetX || e.clientX, y:e.offsetY || e.clientY};
             touch.enterPoint = point;
             touch.lastPoint = point;
             touch.lastTime = +(new Date());
@@ -30,7 +35,7 @@ var Touch = {
             if( !touch.enterObject ) return;
 
             touch.moved = true;
-            var point = {x:e.offsetX || e.clientX, y:e.offsetY || e.clientY};
+            var point = getTouchPoint(e);
             var now = +(new Date());
             
             if( touch.enterObject ) {
@@ -62,7 +67,7 @@ var Touch = {
         function handleMouseUp(e) {
             if( !touch.enterObject ) return;
 
-            var point = {x:e.offsetX || e.clientX, y:e.offsetY || e.clientY};
+            var point = getTouchPoint(e);
             var offset = {x:point.x - touch.lastPoint.x, y:point.y - touch.lastPoint.y};
             
             var event = null;
@@ -87,8 +92,16 @@ var Touch = {
             touch.enterObject = null;
         }
 
+        function handleMouseOut(e) {
+            if( !touch.enterObject ) {
+                return;
+            }
+
+            handleMouseUp(e);
+        }
+
         function handleMouseWheel(e){
-            onPinch( e.wheelDelta > 0 ? Event.PINCH_OUT : Event.PINCH_IN);
+            onPinch( e.wheelDelta > 0 ? 1.2 : 0.8 );
         }
 
         function calculateDistance(pointA, pointB) {

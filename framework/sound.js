@@ -12,7 +12,7 @@ SoundManager.prototype = {
     
     createAudio: function(name) {
         var audio = new Audio();
-        audio.src = name;
+        audio.src = "music/"+name;
 
         return audio;
     },

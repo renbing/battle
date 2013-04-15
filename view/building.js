@@ -24,9 +24,8 @@ function Building(corner, data) {
     
     this.view = new MovieClip(corner);
 
-    this.view.addEventListener(Event.DRAG_START, this.onDragStart.bind(this));
+    //this.view.addEventListener(Event.DRAG_START, this.onDragStart.bind(this));
     this.view.addEventListener(Event.DRAG, this.onDrag.bind(this));
-    this.view.addEventListener(Event.DRAG_END, this.onDragEnd.bind(this));
     this.view.addEventListener(Event.TAP, this.onClick.bind(this));
 
     this.tipView = null;
@@ -37,7 +36,7 @@ function Building(corner, data) {
 
 Building.prototype = {
     onDragStart: function(e) {
-        gScene.logicMap 
+        //gScene.logicMap 
     },
 
     onDrag: function(e) {
@@ -74,6 +73,8 @@ Building.prototype = {
         this.uy = uy;
 
         this.updatePosition();
+
+        // 有bug,要崩溃
         gScene.world.adjustDepth(this);
     },
 
@@ -213,7 +214,7 @@ Building.prototype = {
     },
 
     // 加速升级,清理,研究等
-    accelerate: function() {
+    cash: function() {
         if( this.data.state == BuildingState.UPGRADE ) {
             if( !gScene.updateHud('cash', -5) ) return;
             this.upgraded();
@@ -334,9 +335,9 @@ Building.prototype = {
 
         this.data.timer = now;
         if( this.data.id == 'gold_mine' ) {
-            //soundManager.playEffect('coins_collect_01.wav');
+            soundManager.playEffect('gold_collect_01.wav');
         }else if( this.data.id == 'oil_pump' ) {
-            //soundManager.playEffect('oil_collect_02.wav');
+            soundManager.playEffect('oil_collect_02.wav');
         }
         this.onTick();
     },

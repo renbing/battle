@@ -1,4 +1,4 @@
-
+/*
 Function.prototype.bind = function() {
     var fn = this, 
         args = Array.prototype.slice.call(arguments), 
@@ -9,6 +9,7 @@ Function.prototype.bind = function() {
                 args.concat(Array.prototype.slice.call(arguments)));
     };
 };
+*/
 
 
 function extend(Child, Parent) {

@@ -102,7 +102,7 @@ MainScene.prototype = {
         
         var leftBottom = textureManager.createMovieClip('ui', 'left_bottom');
         leftBottom.y = Device.height;
-        leftBottom.getChildByName('battle').addEventListener(Event.TAP, this.gotoBattle);
+
         leftBottom.getChildByName('battle').addEventListener(Event.TAP, this.gotoBattle);
 
         var rightBottom = textureManager.createMovieClip('ui', 'right_bottom');
@@ -142,6 +142,10 @@ MainScene.prototype = {
 
         this.mapView.addChild(bg);
 
+        this.mapView.addEventListener(Event.TAP, function(e){
+            gActionWindow.close();
+        });
+        
         this.mapView.addEventListener(Event.DRAG, function(e){
             var nx = this.mapView.x + e.move.x;
             var ny = this.mapView.y + e.move.y;
@@ -174,17 +178,12 @@ MainScene.prototype = {
         gModel.updateBuildingStatistic();
     },
 
-    onPinch: function(direction){
-        if( direction == Event.PINCH_OUT ) {
-            this.scale += 0.1;
-            if( this.scale >= this.maxScale ) {
-                this.scale = this.maxScale;
-            }
-        }else if( direction == Event.PINCH_IN ) {
-            this.scale -= 0.1;
-            if( this.scale <= this.minScale ) {
-                this.scale = this.minScale;
-            }
+    onPinch: function(scale){
+        this.scale *= scale;
+        if( this.scale >= this.maxScale ) {
+            this.scale = this.maxScale;
+        }else if( this.scale <= this.minScale ) {
+            this.scale = this.minScale;
         }
 
         this.onScale(this.scale);

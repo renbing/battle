@@ -94,6 +94,10 @@ DisplayObject.prototype = {
         var callback = this.eventBubbleCallBack[e.type];
         if( callback ) {
             callback.call(this, e);
+            // 阻止冒泡
+            return;
+            
+            // 只阻止手势冒泡
             if( e.type == Event.DRAG || e.type == Event.SWIPE || 
                 e.type == Event.DRAG_START || e.type == Event.DRAG_END ) {
 

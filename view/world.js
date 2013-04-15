@@ -77,7 +77,6 @@ World.prototype = {
         }
          
         this.items.splice(index, 1);
-        this.view.removeChildAt(index);
 
         this.add(building);
     },

@@ -35,20 +35,22 @@ function main() {
             });
         }else{
             User = resp.data.user;
-            loadResource();
+            textureManager.load(gConfig.mc, onResourceLoad);
         }
     });
 
-    function loadResource() {
+    function onResourceLoad() {
+        trace('resource loaded');
+
         resourceManager.add('conf/global.dat');
         resourceManager.add('conf/building.dat');
         resourceManager.add('conf/character.dat');
         resourceManager.add('conf/townhall.dat');
 
-        textureManager.load(gConfig.mc, onResourceLoad);
+        resourceManager.load(onConfLoad);
     }
 
-    function onResourceLoad() {
+    function onConfLoad() {
         // 处理配置文件 
         gConfGlobal = new GlobalCSV('conf/global.dat');
         gConfCharacter = new CommonCSV('conf/character.dat', ['ID', 'Level']);
@@ -64,12 +66,14 @@ function main() {
         gScene = new MainScene();
 
         gActionWindow = new ActionWindow();
+
+        soundManager.playBackground('home_music.mp3');
     }
 }
 
 // 处理缩放手势
-function onPinch(direction){
-    gScene && gScene.onPinch && gScene.onPinch(direction);
+function onPinch(scale){
+    gScene && gScene.onPinch && gScene.onPinch(scale);
 }
 
 // -----------------------测试用---------------------------
