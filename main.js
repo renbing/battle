@@ -11,7 +11,7 @@ function mainLoop(passed) {
 
 function main() {
     trace('main');
-
+/*
     var uid = null;
     if( typeof(getUID) == 'function' ) {
         uid = getUID();
@@ -38,6 +38,8 @@ function main() {
             textureManager.load(gConfig.mc, onResourceLoad);
         }
     });
+*/
+    textureManager.load(gConfig.mc, onResourceLoad);
 
     function onResourceLoad() {
         trace('resource loaded');
