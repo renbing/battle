@@ -102,6 +102,7 @@ var Touch = {
 
         function handleMouseWheel(e){
             onPinch( e.wheelDelta > 0 ? 1.2 : 0.8 );
+            e.preventDefault();
         }
 
         function calculateDistance(pointA, pointB) {
