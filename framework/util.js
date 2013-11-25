@@ -29,6 +29,12 @@ String.prototype.format = function()
     });
 }
 
+String.prototype.firstWordCapitalize = function() {
+	return this.replace(/\b(\w)/g,function(m){
+		return m.toUpperCase();
+	});
+}
+
 function getTime() {
     return Math.round(+(new Date()) / 1000);
 }

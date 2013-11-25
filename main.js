@@ -11,7 +11,7 @@ function mainLoop(passed) {
 
 function main() {
     trace('main');
-/*
+
     var uid = null;
     if( typeof(getUID) == 'function' ) {
         uid = getUID();
@@ -30,7 +30,7 @@ function main() {
                 if( resp.code != 0 ) {
                     trace('user.save error');
                 }else{
-                    loadResource();
+                	textureManager.load(gConfig.mc, onResourceLoad);
                 }
             });
         }else{
@@ -38,8 +38,6 @@ function main() {
             textureManager.load(gConfig.mc, onResourceLoad);
         }
     });
-*/
-    textureManager.load(gConfig.mc, onResourceLoad);
 
     function onResourceLoad() {
         trace('resource loaded');
@@ -66,9 +64,9 @@ function main() {
         trace('start');
         gModel = new Model(User);
         gScene = new MainScene();
+        windowManager.init();
 
         gActionWindow = new ActionWindow();
-
         soundManager.playBackground('home_music.mp3');
     }
 }

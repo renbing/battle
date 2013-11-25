@@ -1,1 +1,1 @@
-{"id":"air_defence","y":0,"framesInfo":[],"type":"[object air_defence]","totalFrames":1,"index":0,"frames":[[{"id":"instance53","y":0,"framesInfo":[[-96,-147]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"air_defence","framesInfo":[],"frames":[[{"id":"instance58","framesInfo":[[-96,-147]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object air_defence]","index":0,"x":0}

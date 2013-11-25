@@ -1,1 +1,1 @@
-{"id":"archer_tower","y":0,"framesInfo":[],"type":"[object archer_tower]","totalFrames":1,"index":0,"frames":[[{"id":"instance57","y":0,"framesInfo":[[-96,-129]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"archer_tower","framesInfo":[],"frames":[[{"id":"instance62","framesInfo":[[-96,-129]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object archer_tower]","index":0,"x":0}

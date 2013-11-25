@@ -5,13 +5,14 @@ var BuildingState = {
     CLEAR   : 3,
     TRAIN   : 4,
     RESEARCH: 5,
-}
+};
 
-function Building(corner, data) {
+function Building(id, data) {
+	this.id = id;
     this.data = data;
 
-    this.ux = Math.floor(corner/100);
-    this.uy = corner%100;
+    this.ux = Math.floor(this.id/100);
+    this.uy = this.id%100;
 
     this.sux = this.ux;
     this.suy = this.uy;
@@ -22,10 +23,11 @@ function Building(corner, data) {
     this.buildingBaseConf = gConfBuilding[this.data.id][1];
     this.size = this.buildingBaseConf.Width;
     
-    this.view = new MovieClip(corner);
+    this.view = new MovieClip(this.id);
 
     //this.view.addEventListener(Event.DRAG_START, this.onDragStart.bind(this));
     this.view.addEventListener(Event.DRAG, this.onDrag.bind(this));
+    this.view.addEventListener(Event.DRAG_END, this.onDragEnd.bind(this));
     this.view.addEventListener(Event.TAP, this.onClick.bind(this));
 
     this.tipView = null;
@@ -35,11 +37,180 @@ function Building(corner, data) {
 }
 
 Building.prototype = {
+	_rowBlocking : 0,
+	
     onDragStart: function(e) {
         //gScene.logicMap 
     },
 
     onDrag: function(e) {
+    	
+    	var select = gScene.world.selectBuildings;
+    	var row = select.getSelectRow();
+    	if (row.indexOf(this) >= 0 &&
+    			row.length > 1) {
+    		row.forEach(function(dis) {
+    			return function(building, k) {
+    				building.move(dis);
+    				if (k == 0) {
+    					building._rowBlocking = 0;
+    				}
+    				if (building._rowBlocking == 0) {
+        				if (!building._canPutDown()) {
+        					building._rowBlocking = 1;
+        				}
+    				}
+    			};
+    		}(e));
+    		if (this._rowBlocking == 0) {
+        		row.forEach(function(building) {
+        			var base = building.view.getChildByName('base');
+        			base.gotoAndStop(2);
+        		});
+    		} else {
+        		row.forEach(function(building) {
+        			var base = building.view.getChildByName('base');
+        			base.gotoAndStop(3);
+        		});
+    		}
+    		return;
+    	}
+    	
+		var selectBuilding = select.getSelect();
+		var world = gScene.world;
+    	if (selectBuilding != this &&
+    			world.isVirtualBuilding(this) == false) {
+            return;
+    	}
+    	if( this.data.id == 'wall' ) {
+    		gScene.wallMap.clearRef(this);
+    	}
+    	
+    	this.move(e);
+
+        var okButton = null;
+        if( gScene.world.isVirtualBuilding(this) ) {
+        	okButton = this.view.getChildByName('buy_panel').getChildByName('ok');
+        }
+
+        var buildingBase = this.view.getChildByName('base');
+        // 检测是否可以放下 改变building.view.'base'
+        if( this._canPutDown() ) {
+        	buildingBase.gotoAndStop(2);
+        	if( okButton ) {
+        		okButton.visible = true;
+        	}
+        } else {
+        	buildingBase.gotoAndStop(3);
+        	if( okButton ) {
+        		okButton.visible = false;
+        	}
+        }
+    },
+
+    onDragEnd: function(e) {
+    	// todo: only test
+    	this._rowBlocking = 0;
+    	
+		var selectBuilding = gScene.world.selectBuildings.getSelect();
+		var world = gScene.world;
+    	if (selectBuilding != this && 
+    			world.isVirtualBuilding(this) == false) {
+            return;
+    	}
+    	
+        this.view.x += this.dx;
+        this.view.y += this.dy;
+        
+        var buildingBase = this.view.getChildByName('base');
+        // 检测是否可以放下 改变building.view.'base'
+        if( gScene.world.isVirtualBuilding(this) ) {
+        	if( this._canPutDown() ) {
+        		buildingBase.gotoAndStop(2);
+        	} else {
+        		buildingBase.gotoAndStop(3);
+        		this.updatePosition();
+        		return;
+        	}
+        } else {
+        if( this._canPutDown() ) {
+        	if( this._canPutDown() )
+	        	buildingBase.gotoAndStop(1);
+	        } else {
+	        	buildingBase.gotoAndStop(3);
+	        	this.updatePosition();
+	        	return;
+	        }
+        }
+
+        this.dx = 0;
+        this.dy = 0;
+        
+    	this.id = this.ux * 100 + this.uy;
+    	
+        gModel.updateBuildingStatistic();
+        this.sux = this.ux;
+        this.suy = this.uy;
+
+        this.updatePosition();
+        if( !gScene.world.isVirtualBuilding(this) ) {
+        	gScene.world.adjustDepth(this);
+        	if( this.data.id == 'wall' ) {
+        		gScene.wallMap.addRef(this);
+        	}
+        }
+    },
+
+    onClick: function(e) {
+    	if( !gScene.world.isVirtualBuilding(null) ) {
+    		return;
+    	}
+        var actions = ['info'];
+
+        var now = Timer.getTime();
+        if( this.data.state == BuildingState.UPGRADE ) {
+            actions = ['info', 'cancel', 'cash'];
+        }else if( this.data.state == BuildingState.CLEAR ) {
+            actions = ['cancel'];
+        }else if( this.data.state == BuildingState.RESEARCH ) {
+            actions = ['info', 'upgrade', 'research'];
+        }else if( this.data.state == BuildingState.PRODUCE ) {
+            if( (now - this.data.timer) > 30 ) {
+                this.harvest();
+                return;
+            }
+            actions = ['info', 'upgrade'];
+        }else if( this.data.state == BuildingState.NORMAL ) {
+            if( this.data.id == 'barrack' ) {
+                actions = ['info', 'boost', 'upgrade', 'train'];
+            }else if( this.data.id == 'laboratory' ) {
+                actions = ['info', 'upgrade', 'research'];
+            } else if( this.data.id == 'wall' &&
+            			this._canSelectRow() == true ) {
+            		actions = ['info', 'select_row', 'upgrade'];
+            } else{
+                actions = ['info', 'upgrade'];
+            }
+        }else if( this.data.state == BuildingState.TRAIN ) {
+        	actions = ['info', 'boost', 'upgrade', 'train'];
+        }
+
+        gScene.world.selectBuildings.setSelect(this);
+        gScene.world.moveArrow.open();
+        gActionWindow.open(actions);
+        
+        gScene.world.delBlockingRegion(this);
+    },
+
+    // 更新位置显示
+    updatePosition: function(){
+        this.view.x = (this.ux + this.uy + this.size)/2 * World.unitX;
+        this.view.y = (-this.ux + this.uy)/2 * World.unitY;
+        //trace(this.ux, this.uy, this.view.x, this.view.y);
+    },
+    
+    // 移动
+    move: function(e) {
         this.dx += e.move.x/gScene.scale;
         this.dy += e.move.y/gScene.scale;
 
@@ -74,82 +245,7 @@ Building.prototype = {
 
         this.updatePosition();
 
-        // 有bug,要崩溃
-        gScene.world.adjustDepth(this);
-    },
-
-    onDragEnd: function(e) {
-        this.view.x += this.dx;
-        this.view.y += this.dy;
-
-        this.dx = 0;
-        this.dy = 0;
-
-        /*
-        global.map.clearRect(this.sux, this.suy, this.size, this.size);
-        global.graph.update(this.sux, this.suy, this.size, this.size, GraphNodeType.OPEN);
-        if( global.map.testRect(this.ux, this.uy, this.size, this.size) ) {
-            this.ux = this.sux;
-            this.uy = this.suy;
-
-        }else{
-            var oldCorner = this.sux * 100 + this.suy;
-
-            this.sux = this.ux;
-            this.suy = this.uy;
-
-            global.model.worldUpdate(oldCorner, this);
-        }
-
-        global.map.addRect(this.ux, this.uy, this.size, this.size);
-        global.graph.update(this.ux, this.uy, this.size, this.size, GraphNodeType.WALL);
-        */
-
-        var oldCorner = this.sux * 100 + this.suy;
-        gModel.mapUpdate(oldCorner, this);
-
-        this.sux = this.ux;
-        this.suy = this.uy;
-
-        this.updatePosition();
-    },
-
-    onClick: function(e) {
-        var actions = ['info'];
-
-        var now = Timer.getTime();
-        if( this.data.state == BuildingState.UPGRADE ) {
-            actions = ['info', 'cancel', 'cash'];
-        }else if( this.data.state == BuildingState.CLEAR ) {
-            actions = ['cancel'];
-        }else if( this.data.state == BuildingState.RESEARCH ) {
-            actions = ['info', 'upgrade'];
-        }else if( this.data.state == BuildingState.PRODUCE ) {
-            if( (now - this.data.timer) > 30 ) {
-                this.harvest();
-                return;
-            }
-            actions = ['info', 'upgrade'];
-        }else if( this.data.state == BuildingState.NORMAL ) {
-            if( this.data.id == 'barrack' ) {
-                actions = ['info', 'boost', 'upgrade', 'train'];
-            }else if( this.data.id == 'labratory' ) {
-                actions = ['info', 'upgrade', 'research'];
-            }else{
-                actions = ['info', 'upgrade'];
-            }
-        }else if( this.data.state == BuildingState.TRAIN ) {
-            actions = ['info', 'upgrade'];
-        }
-        
-        gActionWindow.open(this, actions);
-    },
-
-    // 更新位置显示
-    updatePosition: function(){
-        this.view.x = (this.ux + this.uy + this.size)/2 * World.unitX;
-        this.view.y = (-this.ux + this.uy)/2 * World.unitY;
-        //trace(this.ux, this.uy, this.view.x, this.view.y);
+        gScene.world.bringToFront(this);
     },
 
     // 获取升级需要的资源
@@ -166,21 +262,21 @@ Building.prototype = {
 
     // 升级
     upgrade: function() {
-        if( this.data.state == BuildingState.UPGRADE ) return;
-        if( !gModel.canWork() ) return;
+        if( this.data.state == BuildingState.UPGRADE ) return false;
+        if( !gModel.canWork() ) return false;
 
         var upgradeCost = this.getUpgradeCost();
-        if( !upgradeCost ) return;
+        if( !upgradeCost ) return false;
 
         var buildingLevelConf = gConfBuilding[this.data.id][this.data.level+1];
         if( this.data.id != 'town_hall' && 
             buildingLevelConf.TownHallLevel > gModel.buildingMaxLevel.townhall ){
             trace('主建筑等级不够');
-            return;
+            return false;
         }
 
         if( !gScene.updateHud(upgradeCost.resource, -upgradeCost.num) ) {
-            return;
+            return false;
         }
 
         var now = Timer.getTime();
@@ -188,6 +284,7 @@ Building.prototype = {
         this.data.state = BuildingState.UPGRADE;
 
         gScene.updateHud('working', 1);
+        return true;
     },
 
     // 升级结束
@@ -203,7 +300,7 @@ Building.prototype = {
         if( this.buildingBaseConf.BuildingClass == 'Resource' ) {
             this.data.state = BuildingState.PRODUCE;
             this.data.timer = now;
-        }else if( this.buildingBaseConf.BuildingClass == 'Army' ) {
+        }else if( this.buildingBaseConf.ID == 'barrack' ) {
             this.training();
         }
 
@@ -248,9 +345,11 @@ Building.prototype = {
         if( !this.viewInited ) {
             // 初始化
             var base = textureManager.createMovieClip('building', 'base'+this.size);
+            base.name = 'base';
             this.view.addChild(base);
 
             var building = textureManager.createMovieClip('building', this.data.id);
+            building.name = 'building';
             this.view.addChild(building);
 
             var tip = new TextField();
@@ -268,6 +367,8 @@ Building.prototype = {
             this.view.addChild(this.tipView);
             
             Timer.addTick(this.onTick.bind(this));
+
+            this.viewInited = true;
         }else{
             // 更新建筑显示 
             this.view.getChildAt(1).gotoAndStop(1);
@@ -275,8 +376,6 @@ Building.prototype = {
         
         this.updatePosition();
         this.onTick();
-
-        this.viewInited = true;
     },
 
     // 每秒钟的状态更新
@@ -307,6 +406,7 @@ Building.prototype = {
             }else{
                 tip.visible = this.trained();
             }
+            windowManager.update('train_troop_panel', this);
         }else if( this.data.state == BuildingState.RESEARCH ) {
             if( now < this.data.timer ) {
                 tipText.setText('研究 剩余时间:' + (this.data.timer - now));
@@ -367,7 +467,7 @@ Building.prototype = {
             gScene.updateHud('working', -1);
 
             // 还钱
-            var upgradeCost = this.getUpgradeCost()
+            var upgradeCost = this.getUpgradeCost();
             upgradeCost.num = Math.round(-upgradeCost.num/2);
             gScene.updateHud(upgradeCost.resource, upgradeCost.num);
         }
@@ -385,13 +485,13 @@ Building.prototype = {
             level = 1;
         }
 
-        var characterLevelConf = global.csv.character.get(character, level + 1);
+        var characterLevelConf = gConfCharacter[character][level + 1];
         if( !characterLevelConf ) {
             trace('无法升级,以及达到顶级');
             return;
         }
 
-        var characterBaseConf = global.csv.character.get(character, 1);
+        var characterBaseConf = gConfCharacter[character][1];
         var costResource = characterBaseConf.UpgradeResource;
         var costNum = -characterLevelConf.UpgradeCost;
         if( !gScene.updateHud(costResource, costNum) ) {
@@ -413,8 +513,8 @@ Building.prototype = {
     },
 
     train: function(character, num) {
-        if( this.data.state == BuildingState.UPGRADE ) return;
-        if( Math.abs(num) > 1 ) return;
+        if( this.data.state == BuildingState.UPGRADE ) return false;
+        if( Math.abs(num) > 1 ) return false;
 
         var task = this.data.task;
         var taskIndex = -1;
@@ -426,22 +526,25 @@ Building.prototype = {
         }
         
         // 没有可以取消的训练
-        if( taskIndex < 0 && num < 0 ) return;
+        if( taskIndex < 0 && num < 0 ) return false;
 
         // 判断当前建筑训练限制
         if( num > 0 ) {
-            var buildingLevelConf = global.csv.building.get(this.data.id, this.data.level);
-            if( 0 >= buildingLevelConf.UnitProduction ) return;
+            var buildingLevelConf = gConfBuilding[this.data.id][this.data.level];
+            if( 0 >= buildingLevelConf.UnitProduction ) return false;
         }
 
-        var characterBaseConf = global.csv.character.get(character, 1);
+        var characterBaseConf = gConfCharacter[character][1];
         var characterLevel = gModel.laboratory[character];
-        var characterLevelConf = global.csv.character.get(character, characterLevel);
+        if (characterLevel == undefined) {
+        	characterLevel = 1;
+        }
+        var characterLevelConf = gConfCharacter[character][characterLevel];
 
         var costResource = characterBaseConf.TrainingResource;
-        var costNum = -characterLevelConf.TrainingCost*num;
+        var costNum = -characterLevelConf['TrainingCost'] * num;
         if( !gScene.updateHud(costResource, costNum) ) {
-            return;
+            return false;
         }
         
         if( taskIndex < 0 ) {
@@ -458,6 +561,7 @@ Building.prototype = {
         }
 
         this.training();
+        return true;
     },
 
     training: function(character) {
@@ -469,7 +573,7 @@ Building.prototype = {
         }else {
             var character = this.data.task[0][0];
             var level = gModel.laboratory[character] ? gModel.laboratory[character] : 1;
-            var characterLevelConf = global.csv.character.get(character, level);
+            var characterLevelConf = gConfCharacter[character][level];
 
             var now = Timer.getTime();
             this.data.state = BuildingState.TRAIN;
@@ -501,7 +605,7 @@ Building.prototype = {
             task.splice(emptyIndex, 1);
         }
 
-        var characterBaseConf = global.csv.character.get(character, 1);
+        var characterBaseConf = gConfCharacter[character][1];
         gModel.houseSpace += characterBaseConf.HousingSpace;
         if( !gModel.troops[character] ) {
             gModel.troops[character] = 1;
@@ -512,8 +616,78 @@ Building.prototype = {
         this.data.state = BuildingState.NORMAL;
         this.training();
     },
-
-    info: function() {
+    doAction: function(action){
+    	switch (action) {
+    	case 'info':
+    		windowManager.open('infomation_panel', this);
+    		break;
+    	case 'upgrade':
+    		windowManager.open('upgrade_panel', this);
+    		break;
+    	case 'cancel':
+    		break;
+    	case 'boost':
+    		break;
+    	case 'cash':
+    		this.cash();
+    		break;
+    	case 'train':
+    		windowManager.open('train_troop_panel', this);
+    		break;
+    	case 'research':
+    		windowManager.open('laboratory_panel', this);
+    		break;
+    	case 'select_row':
+    		if (!this._canSelectRow()) return;
+        	var rowBuildings = gScene.wallMap.getRow(this);
+        	var lineBuildings = gScene.wallMap.getLine(this);
+        	var targetBuildings = [];
+        	if (rowBuildings.length > lineBuildings.length) {
+        		targetBuildings = rowBuildings;
+        		gScene.world.selectBuildings.setSelectRow(rowBuildings);
+        	} else {
+        		targetBuildings = lineBuildings;
+        		gScene.world.selectBuildings.setSelectRow(lineBuildings);
+        	}
+        	// todo: 更新移动箭头 更新ActionWindow
+        	targetBuildings.forEach(function(v) {
+        		var base = v.view.getChildByName('base');
+        		base.gotoAndStop(2);
+        	});
+    		break;
+    	case 'rotate_row':
+    		break;
+    	default: return;
+    	}
+    },
+    
+    backInPlace: function() {
+    	this.dx = 0;
+    	this.dy = 0;
+    	
+    	this.ux = this.sux;
+    	this.uy = this.suy;
+    	
+    	this.updatePosition();
+    	this.view.getChildByName('base').gotoAndStop(1);
+    	gScene.world.addBlockingRegion(this);
+    	if( this.data.id == 'name' ) {
+    		gScene.wallMap.addRef(this);
+    	}
+    },
+    
+    // 检测当前建筑物是否可以被放置到当前位置
+    _canPutDown: function() {
+    	return gScene.world.testBlockingRegion(this);
+    },
+    
+    _canSelectRow: function() {
+    	var rowBuildings = gScene.wallMap.getRow(this);
+    	var lineBuildings = gScene.wallMap.getLine(this);
+    	if (rowBuildings.length == 1 && lineBuildings.length == 1) {
+    		return false;
+    	}
+    	return true;
     },
 };
 
@@ -523,9 +697,6 @@ function ActionWindow(){
     this.actionViews = {};
     this.actionWidth = 0;
     this.actionSpanWidth = 10;
-
-    this.building = null;
-    this.opened = false;
 
     this.init();
 }
@@ -537,11 +708,13 @@ ActionWindow.prototype = {
         this.view.x = Device.width/2;
         this.view.y = Device.height - 100;
 
-        var actions = ['info', 'upgrade', 'cancel', 'boost', 'cash', 'train'];
+        var actions = ['info', 'upgrade', 'cancel', 'boost', 'cash', 'train', 'research', 'select_row', 'rotate_row'];
         actions.forEach(function(action){
             var view = textureManager.createMovieClip('ui', 'action_'+action); 
             view.addEventListener(Event.TAP, function(e){
-                this.building[action]();
+            	var building = gScene.world.selectBuildings.getSelect();
+            	if (building == null || building == undefined) return;
+            	building.doAction(action);
                 this.close();
             }.bind(this));
             this.actionViews[action] = view;
@@ -553,20 +726,18 @@ ActionWindow.prototype = {
         stage.addChild(this.view);
     },
 
-    open: function(building, actions){
-        if( building == this.building && this.opened){
+    open: function(actions){
+    	var building = gScene.world.selectBuildings.getSelect();
+    	if (building == null || building == undefined) {
             this.close();
             return;
-        }
-
-        this.building = building;
+    	}
 
         for(var action in this.actionViews) {
             this.actionViews[action].visible = false;
         }
 
         this.view.visible = true;
-        this.opened = true;
         
         var width = actions.length * this.actionWidth 
                     + (actions.length-1)*this.actionSpanWidth;
@@ -580,6 +751,5 @@ ActionWindow.prototype = {
 
     close: function(){
         this.view.visible = false;
-        this.opened = false;
     }
 };

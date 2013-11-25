@@ -12,7 +12,7 @@
 <%
         string []jss = File.ReadAllText(Server.MapPath(".") + "\\index.js").Split('\n');
         foreach( string js in jss ) {
-            Response.Write("    <script src='" + js + "' type='text/javascript' charset='utf-8'></script>\n"); 
+            Response.Write(string.Format("    <script src='{0}' type='text/javascript' charset='utf-8'></script>\n", js));
         }
 
         string []sizes = {"1024X768 iPad","960X640 iPhone","1136X640 iPhone5","1280X720 S3/Note2"};

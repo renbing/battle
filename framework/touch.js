@@ -38,26 +38,35 @@ var Touch = {
             var point = getTouchPoint(e);
             var now = +(new Date());
             
-            if( touch.enterObject ) {
-                var offset = {x:point.x - touch.lastPoint.x, y:point.y - touch.lastPoint.y};
-                var distance = (Math.abs(offset.x) < Math.abs(offset.y)) ? 
-                                Math.abs(offset.y) : Math.abs(offset.x);
-                var delay = now - touch.lastTime;
-                if( distance > 30 && delay < 20 ) {
-                    var direction = (Math.abs(offset.x) < Math.abs(offset.y)) ?
-                        ((offset.y < 0) ? Event.SWIPE_UP : Event.SWIPE_DOWN) :
-                        ((offset.x < 0) ? Event.SWIPE_LEFT : Event.SWIPE_RIGHT);
-                    touch.swipe = direction;
+            var offset = {x:point.x - touch.lastPoint.x, y:point.y - touch.lastPoint.y};
+            var distance = (Math.abs(offset.x) < Math.abs(offset.y)) ? 
+                            Math.abs(offset.y) : Math.abs(offset.x);
+            var delay = now - touch.lastTime;
+            if( distance > 50 && delay < 10 ) {
+                var direction = (Math.abs(offset.x) < Math.abs(offset.y)) ?
+                    ((offset.y < 0) ? Event.SWIPE_UP : Event.SWIPE_DOWN) :
+                    ((offset.x < 0) ? Event.SWIPE_LEFT : Event.SWIPE_RIGHT);
+                if( !touch.swipe ) {
+                	touch.swipe = direction;
+                	touch.enterObject.bubbleEvent(
+                			new Event(Event.DRAG_END, touch.enterPoint, offset)
+                	);
+                	touch.enterObject.bubbleEvent(
+                			new Event(Event.SWIPE, touch.enterPoint, offset, direction)
+                	);
+                	touch.drag = false;
                 }
+            }
 
+            if( !touch.swipe ) {
                 if( !touch.drag ) {
-                    touch.drag = true;
-                    touch.enterObject.bubbleEvent(
-                        new Event(Event.DRAG_START, touch.enterPoint, offset)
-                    );
+                	touch.enterObject.bubbleEvent(
+                			new Event(Event.DRAG_START, touch.enterPoint, offset)
+                	);
                 }
+                touch.drag = true;
                 touch.enterObject.bubbleEvent(
-                    new Event(Event.DRAG, touch.enterPoint, offset));
+                        new Event(Event.DRAG, touch.enterPoint, offset));
             }
 
             touch.lastPoint = point;
@@ -74,8 +83,6 @@ var Touch = {
             if( touch.moved ) {
                 if( touch.drag ) {
                     event = new Event(Event.DRAG_END, touch.enterPoint, offset);
-                }else if( touch.swipe ) {
-                    event = new Event(Event.SWIPE, touch.enterPoint, offset, touch.swipe);
                 }
             }else {
                 var clickOffset = calculateDistance(point, touch.enterPoint);
@@ -102,6 +109,7 @@ var Touch = {
 
         function handleMouseWheel(e){
             onPinch( e.wheelDelta > 0 ? 1.2 : 0.8 );
+            e.preventDefault();
         }
 
         function calculateDistance(pointA, pointB) {

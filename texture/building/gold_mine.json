@@ -1,1 +1,1 @@
-{"id":"gold_mine","y":0,"framesInfo":[],"type":"[object gold_mine]","totalFrames":1,"index":0,"frames":[[{"id":"instance73","y":0,"framesInfo":[[-82,-87]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"gold_mine","framesInfo":[],"frames":[[{"id":"instance86","framesInfo":[[-82,-87]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object gold_mine]","index":0,"x":0}

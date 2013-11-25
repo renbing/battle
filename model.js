@@ -5,7 +5,8 @@
 var User = {
     _id :   4,
     name : '',          // 名字
-    base :  {         
+    base :  {
+    	ai			: 1,		// 自增长编号ID
         honor       : 0,        // 荣誉
         level       : 1,        // 荣誉等级
         gold        : 15000,    // 金币
@@ -19,9 +20,10 @@ var User = {
     },
     
     map :   {       // 地图
-    /* corner : {   位置坐标 x*100+y
-        id          建筑ID
-
+    /* id : {   
+        name        建筑ID
+		corner		位置坐标 x*100+y
+		
         level       等级
         state       状态 0正常1升级2生产
         timer       计时器
@@ -30,6 +32,7 @@ var User = {
 
         research    实验室研究兵种
 
+		storage		存储 金币 石油 数额
     */
     },
 
@@ -70,7 +73,7 @@ function Model(data) {
     
     this.buildingCount = {},    // 地图上的建筑物分类统计
     this.buildingMaxLevel = {}, // 地图上建筑最大等级
-    this.houseSpace = 0;        // 兵力上限
+    this.houseSpace = 0;        // 当前兵力
     
     for( var id in this.troops ) {
         var characterBaseConf = gConfCharacter[id][1];
@@ -79,6 +82,11 @@ function Model(data) {
 }
 
 Model.prototype = {
+	nextId: function(){
+		this.base.ai += 1;
+		return this.base.ai;
+	},
+	
     save: function(){
         var user = {};
         for( var key in User ) {
@@ -94,27 +102,15 @@ Model.prototype = {
     },
 
     mapAdd: function(building) {
-        var corner = building.ux * 100 + building.uy;
-        
-        this.map[corner] = building.data;
+        this.map[building.id] = building.data;
         
         this.updateBuildingStatistic();
     },
 
     mapRemove: function(building) {
-        var corner = building.ux * 100 + building.uy;
-
-        delete this.map[corner];
+        delete this.map[building.id];
 
         this.updateBuildingStatistic();
-    },
-
-    mapUpdate: function(oldCorner, building) {
-        var corner = building.ux * 100 + building.uy;
-
-        delete this.map[oldCorner];
-
-        this.map[corner] = building.data;
     },
 
     updateBuildingStatistic: function() {
@@ -126,8 +122,8 @@ Model.prototype = {
         this.buildingCount = {};
         this.buildingMaxLevel = {};
 
-        for( var corner in this.map ) {
-            var data = this.map[corner];
+        for( var id in this.map ) {
+            var data = this.map[id];
 
             if( data.state == BuildingState.UPGRADE || data.state == BuildingState.CLEAR ) {
                 working += 1;
@@ -135,20 +131,19 @@ Model.prototype = {
 
             if( !data.level ) return;
             var level = data.level;
-            var id = data.id;
 
-            var buildingConf = gConfBuilding[id][level];
+            var buildingConf = gConfBuilding[data.id][level];
             goldMax += buildingConf.MaxStoredGold;
             oilMax += buildingConf.MaxStoredOil;
             troopMax += buildingConf.HousingSpace;
 
-            if( !this.buildingCount[id] ) {
-                this.buildingCount[id] = 0;
+            if( !this.buildingCount[data.id] ) {
+                this.buildingCount[data.id] = 0;
             }
-            this.buildingCount[id] = 0;
+            this.buildingCount[data.id]++;
 
-            if( !this.buildingMaxLevel[id] || this.buildingMaxLevel[id] < level ) {
-                this.buildingMaxLevel[id] = level;
+            if( !this.buildingMaxLevel[data.id] || this.buildingMaxLevel[data.id] < level ) {
+                this.buildingMaxLevel[data.id] = level;
             }
         }
 
@@ -172,4 +167,5 @@ Model.prototype = {
 
         return true;
     },
+
 };

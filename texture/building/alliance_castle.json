@@ -1,1 +1,1 @@
-{"id":"alliance_castle","y":0,"framesInfo":[],"type":"[object alliance_castle]","totalFrames":1,"index":0,"frames":[[{"id":"instance55","y":0,"framesInfo":[[-117,-157]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"alliance_castle","framesInfo":[],"frames":[[{"id":"instance60","framesInfo":[[-117,-157]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object alliance_castle]","index":0,"x":0}

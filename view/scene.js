@@ -5,7 +5,6 @@ function MainScene() {
     this.mapView = null;
     this.world = null;
     this.uiView = null;
-    this.logicMap = new LogicMap(World.unitW, World.unitH);
 
     this.ui = {};
 
@@ -13,6 +12,8 @@ function MainScene() {
     this.scale = 0.5;
     this.maxScale = 1;
     this.minScale = 0.5;
+    
+    this.wallMap = null;
 
     this.init();
 }
@@ -31,6 +32,7 @@ MainScene.prototype = {
 
         this._initUI();
         this._initMap();
+        this._initWallMap();
 
         this.onScale(this.scale);
     },
@@ -142,9 +144,19 @@ MainScene.prototype = {
 
         this.mapView.addChild(bg);
 
-        this.mapView.addEventListener(Event.TAP, function(e){
-            gActionWindow.close();
-        });
+        this.mapView.addEventListener(Event.TAP, function(scene){
+            return function() {
+            	if( gScene.world.isVirtualBuilding(null) ) {
+            		gActionWindow.close();
+            		var selectBuiding = scene.world.selectBuildings.getSelect();
+            		if( selectBuiding ) {
+            			selectBuiding.backInPlace();
+            		}
+                	scene.world.moveArrow.close();
+                	scene.world.selectBuildings.clearSelect();
+                }
+            }
+        }(this));
         
         this.mapView.addEventListener(Event.DRAG, function(e){
             var nx = this.mapView.x + e.move.x;
@@ -169,13 +181,30 @@ MainScene.prototype = {
 
         this.world = new World();
         this.mapView.addChild(this.world.view);
-
-        for( var corner in gModel.map ) {
-            var building = new Building(corner, gModel.map[corner]);
+        
+        for( var id in gModel.map ) {
+            var building = new Building(id, gModel.map[id]);
             this.world.add(building);
         }
 
         gModel.updateBuildingStatistic();
+        
+        // test
+        if (gModel.buildingCount['town_hall'] == undefined ||
+        		gModel.buildingCount['town_hall'] < 1) {
+        	var nextID = gModel.nextId();
+    	    var data = {
+	            name: 'town_hall',
+	            level: 1,
+	            state: 0,
+	            timer: 0,
+	            corner : 0,
+	        };
+    	    var building = new Building(nextID, data);
+    	    gModel.mapAdd(building);
+    	    this.world.add(building);
+        }
+
     },
 
     onPinch: function(scale){
@@ -218,36 +247,106 @@ MainScene.prototype = {
 
     gotoShop: function(){
         trace('gotoShop');
+        windowManager.open("shop_list_panel");
     },
 
     gotoBattle: function(){
         trace('gotoBattle');
     },
 
-    buyBuilding: function(id){
-        if( !(id in gConfBuilding) ) {
-            return;
+    buyBuilding: function(building){
+    	var name = building.data.name;
+        if( !(name in gConfBuilding) ) {
+            return false;
         }
-
-        var buildingConf = gConfBuilding[id][1];
+        if( building.data.level != 1 ||
+    		building.data.state != 0 ||
+    		building.data.timer != 0) {
+        	trace('buy building error........');
+        	return false;
+        }
         
-        var data = {
-            id: id,
-            level: 1,
-            state: 0,
-            timer: 0
-        };
-
-        if( id == 'laboratory' ) {
-            data.research = 0;
-        }else if( id == 'barrack' ) {
-            data.task = [];
+        if( !this._checkBuyBuilding(building) ) {
+        	return false;
         }
 
-        var building = new Building(0, data);
+        var buildingConf = gConfBuilding[name][1];
+        
+        building.id = gModel.nextId();
+        
+        if( name == 'laboratory' ) {
+        	building.data.research = 0;
+        }else if( name == 'barrack' ) {
+        	building.data.task = [];
+        }else if( buildingConf['MaxStoredGold'] ||
+        		  buildingConf['MaxStoredOil'] ||
+        		  buildingConf['ProducesResource']) {
+        	building.data.storage = {};
+        }
+        
+        if (buildingConf['MaxStoredGold']) {
+        	building.data.storage['gold'] = 0;
+        }
+        if (buildingConf['MaxStoredOil']) {
+        	building.data.storage['oil'] = 0;
+        }
+        if (buildingConf['ProducesResource']) {
+        	building.data.storage[buildingConf['ProducesResource'].toLowerCase()] = 0;
+        }
+        
         gModel.mapAdd(building);
         this.world.add(building);
+        return true;
     },
+    
+    _checkBuyBuilding: function(building) {
+    	var name = building.data.name;
+    	var buildingBaseConf = gConfBuilding[name][1];
+    	
+    	var resType = buildingBaseConf['BuildResource'];
+    	var buildCost = buildingBaseConf['BuildCost'];
+    	
+    	var needLevel = buildingBaseConf['TownHallLevel'];
+    	var townHallLevel = gModel.buildingMaxLevel['town_hall'];
+    	var townHallConf = gConfTownHall[townHallLevel];
+    	
+    	var currentCount = gModel.buildingCount[name];
+    	var maxCount = townHallConf[name];
+    	
+    	var x = building.ux;
+    	var y = building.uy;
+    	var width = building.size;
+    	var height = building.size;
+    	
+    	// 基地需求等级检测
+    	if( townHallLevel < needLevel ) {
+    		trace('基地等级不够');
+    		return false;
+    	}
+    	
+    	// 建造数量检测
+    	if( currentCount >= maxCount ) {
+    		trace('超出建造最大数量');
+    		return false;
+    	}
+    	
+    	// 阻挡区域检测
+    	if( !gScene.world.testBlockingRegion(x, y, width, height) ) {
+    		trace('碰撞');
+    		return false;
+    	}
+    	
+    	// 花费检测
+    	if( gScene.world.changeResources(resType, -buildCost) == false ) {
+    		return false;
+    	}
+    	return true;
+    },
+    
+    _initWallMap: function() {
+    	this.wallMap = new WallMap(World.unitW, World.unitH);
+    	this.wallMap.updateAll(this.world.items);
+    }
 };
 
 function BattleScene() {

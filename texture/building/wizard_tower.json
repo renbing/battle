@@ -1,1 +1,1 @@
-{"id":"wizard_tower","y":0,"framesInfo":[],"type":"[object wizard_tower]","totalFrames":1,"index":0,"frames":[[{"id":"instance91","y":0,"framesInfo":[[-81,-102]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"wizard_tower","framesInfo":[],"frames":[[{"id":"instance109","framesInfo":[[-81,-102]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object wizard_tower]","index":0,"x":0}

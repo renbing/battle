@@ -1,1 +1,1 @@
-{"id":"town_hall","y":0,"framesInfo":[],"type":"[object town_hall]","totalFrames":1,"index":0,"frames":[[{"id":"instance85","y":0,"framesInfo":[[-118,-158]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"town_hall","framesInfo":[],"frames":[[{"id":"instance103","framesInfo":[[-118,-158]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object town_hall]","index":0,"x":0}

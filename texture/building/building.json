@@ -1,15 +1,15 @@
 {"frames": [
 
 {
-	"filename": "air_defence/1/instance53_1.png",
-	"frame": {"x":1860,"y":638,"w":137,"h":193},
+	"filename": "air_defence/1/instance58_1.png",
+	"frame": {"x":1866,"y":652,"w":137,"h":193},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":31,"y":10,"w":137,"h":193},
 	"sourceSize": {"w":213,"h":213}
 },
 {
-	"filename": "alliance_castle/1/instance55_1.png",
+	"filename": "alliance_castle/1/instance60_1.png",
 	"frame": {"x":1866,"y":2,"w":176,"h":206},
 	"rotated": false,
 	"trimmed": true,
@@ -17,47 +17,135 @@
 	"sourceSize": {"w":230,"h":230}
 },
 {
-	"filename": "archer_tower/1/instance57_1.png",
-	"frame": {"x":1504,"y":712,"w":135,"h":179},
+	"filename": "archer_tower/1/instance62_1.png",
+	"frame": {"x":216,"y":1358,"w":135,"h":179},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":27,"y":8,"w":135,"h":179},
 	"sourceSize": {"w":199,"h":199}
 },
 {
-	"filename": "barrack/1/instance59_1.png",
-	"frame": {"x":1641,"y":750,"w":132,"h":134},
+	"filename": "barrack/1/instance64_1.png",
+	"frame": {"x":310,"y":1204,"w":132,"h":134},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":16,"y":14,"w":132,"h":134},
 	"sourceSize": {"w":164,"h":164}
 },
 {
-	"filename": "base2/1/instance61_1.png",
-	"frame": {"x":1866,"y":210,"w":144,"h":108},
+	"filename": "base1/1/instance66_1.png",
+	"frame": {"x":338,"y":1769,"w":72,"h":54},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":72,"h":54},
+	"sourceSize": {"w":76,"h":58}
+},
+{
+	"filename": "base1/2/instance66_1.png",
+	"frame": {"x":164,"y":1960,"w":72,"h":54},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":72,"h":54},
+	"sourceSize": {"w":76,"h":58}
+},
+{
+	"filename": "base1/3/instance66_1.png",
+	"frame": {"x":90,"y":1960,"w":72,"h":54},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":72,"h":54},
+	"sourceSize": {"w":76,"h":58}
+},
+{
+	"filename": "base2/1/instance55_1.png",
+	"frame": {"x":1866,"y":430,"w":144,"h":108},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":144,"h":108},
 	"sourceSize": {"w":148,"h":112}
 },
 {
-	"filename": "base3/1/instance63_1.png",
-	"frame": {"x":1794,"y":474,"w":216,"h":162},
+	"filename": "base2/2/instance55_1.png",
+	"frame": {"x":1866,"y":320,"w":144,"h":108},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":144,"h":108},
+	"sourceSize": {"w":148,"h":112}
+},
+{
+	"filename": "base2/3/instance55_1.png",
+	"frame": {"x":1866,"y":210,"w":144,"h":108},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":2,"w":144,"h":108},
+	"sourceSize": {"w":148,"h":112}
+},
+{
+	"filename": "base3/1/instance69_1.png",
+	"frame": {"x":2,"y":1796,"w":216,"h":162},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":2,"w":216,"h":162},
 	"sourceSize": {"w":220,"h":166}
 },
 {
-	"filename": "base4/1/instance65_1.png",
-	"frame": {"x":1504,"y":274,"w":288,"h":216},
+	"filename": "base3/2/instance69_1.png",
+	"frame": {"x":1794,"y":1194,"w":216,"h":162},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":216,"h":162},
+	"sourceSize": {"w":220,"h":166}
+},
+{
+	"filename": "base3/3/instance69_1.png",
+	"frame": {"x":1794,"y":1030,"w":216,"h":162},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":2,"w":216,"h":162},
+	"sourceSize": {"w":220,"h":166}
+},
+{
+	"filename": "base4/1/instance72_1.png",
+	"frame": {"x":2,"y":1578,"w":288,"h":216},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":2,"y":1,"w":288,"h":216},
 	"sourceSize": {"w":292,"h":220}
 },
 {
-	"filename": "base5/1/instance67_1.png",
+	"filename": "base4/2/instance72_1.png",
+	"frame": {"x":1504,"y":1034,"w":288,"h":216},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":1,"w":288,"h":216},
+	"sourceSize": {"w":292,"h":220}
+},
+{
+	"filename": "base4/3/instance72_1.png",
+	"frame": {"x":1504,"y":816,"w":288,"h":216},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":288,"h":216},
+	"sourceSize": {"w":292,"h":220}
+},
+{
+	"filename": "base5/1/instance75_1.png",
+	"frame": {"x":1504,"y":274,"w":360,"h":270},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":360,"h":270},
+	"sourceSize": {"w":364,"h":274}
+},
+{
+	"filename": "base5/2/instance75_1.png",
+	"frame": {"x":1504,"y":546,"w":360,"h":268},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":3,"w":360,"h":268},
+	"sourceSize": {"w":364,"h":274}
+},
+{
+	"filename": "base5/3/instance75_1.png",
 	"frame": {"x":1504,"y":2,"w":360,"h":270},
 	"rotated": false,
 	"trimmed": true,
@@ -65,7 +153,7 @@
 	"sourceSize": {"w":364,"h":274}
 },
 {
-	"filename": "bg/1/instance69_1.png",
+	"filename": "bg/1/instance78_1.png",
 	"frame": {"x":2,"y":2,"w":1500,"h":1200},
 	"rotated": false,
 	"trimmed": true,
@@ -73,88 +161,144 @@
 	"sourceSize": {"w":1504,"h":1204}
 },
 {
-	"filename": "cannon/1/instance71_1.png",
-	"frame": {"x":1718,"y":638,"w":140,"h":110},
+	"filename": "buy_building_verify/1/cancel/1/instance82_1.png",
+	"frame": {"x":2005,"y":738,"w":40,"h":40},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":40,"h":40},
+	"sourceSize": {"w":44,"h":44}
+},
+{
+	"filename": "buy_building_verify/1/instance80_1.png",
+	"frame": {"x":2005,"y":695,"w":40,"h":41},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":40,"h":41},
+	"sourceSize": {"w":44,"h":45}
+},
+{
+	"filename": "buy_building_verify/1/ok/1/instance81_1.png",
+	"frame": {"x":2005,"y":652,"w":40,"h":41},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":40,"h":41},
+	"sourceSize": {"w":44,"h":45}
+},
+{
+	"filename": "cannon/1/instance84_1.png",
+	"frame": {"x":1866,"y":540,"w":140,"h":110},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":11,"y":28,"w":140,"h":110},
 	"sourceSize": {"w":162,"h":162}
 },
 {
-	"filename": "gold_mine/1/instance73_1.png",
-	"frame": {"x":1641,"y":886,"w":124,"h":108},
+	"filename": "gold_mine/1/instance86_1.png",
+	"frame": {"x":292,"y":1659,"w":124,"h":108},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":22,"y":26,"w":124,"h":108},
 	"sourceSize": {"w":164,"h":164}
 },
 {
-	"filename": "gold_storage/1/instance75_1.png",
-	"frame": {"x":1904,"y":971,"w":116,"h":134},
+	"filename": "gold_storage/1/instance88_1.png",
+	"frame": {"x":220,"y":1796,"w":116,"h":134},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":16,"y":9,"w":116,"h":134},
 	"sourceSize": {"w":154,"h":154}
 },
 {
-	"filename": "labratory/1/instance77_1.png",
-	"frame": {"x":1855,"y":320,"w":182,"h":152},
+	"filename": "laboratory/1/instance90_1.png",
+	"frame": {"x":1858,"y":847,"w":182,"h":152},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":14,"y":26,"w":182,"h":152},
 	"sourceSize": {"w":204,"h":204}
 },
 {
-	"filename": "mortar/1/instance79_1.png",
-	"frame": {"x":1767,"y":982,"w":102,"h":112},
+	"filename": "mortar/1/instance92_1.png",
+	"frame": {"x":238,"y":1932,"w":102,"h":112},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":18,"y":15,"w":102,"h":112},
 	"sourceSize": {"w":142,"h":142}
 },
 {
-	"filename": "oil_pump/1/instance81_1.png",
-	"frame": {"x":1904,"y":833,"w":116,"h":136},
+	"filename": "move_arrow/1/arrow_ld/1/instance94_1.png",
+	"frame": {"x":1794,"y":816,"w":62,"h":52},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":62,"h":52},
+	"sourceSize": {"w":66,"h":56}
+},
+{
+	"filename": "move_arrow/1/arrow_lu/1/instance95_1.png",
+	"frame": {"x":1794,"y":977,"w":61,"h":51},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":61,"h":51},
+	"sourceSize": {"w":65,"h":55}
+},
+{
+	"filename": "move_arrow/1/arrow_rd/1/instance96_1.png",
+	"frame": {"x":1794,"y":870,"w":61,"h":52},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":61,"h":52},
+	"sourceSize": {"w":65,"h":56}
+},
+{
+	"filename": "move_arrow/1/arrow_ru/1/instance97_1.png",
+	"frame": {"x":1794,"y":924,"w":61,"h":51},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":61,"h":51},
+	"sourceSize": {"w":65,"h":55}
+},
+{
+	"filename": "oil_pump/1/instance99_1.png",
+	"frame": {"x":192,"y":1204,"w":116,"h":136},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":19,"y":9,"w":116,"h":136},
 	"sourceSize": {"w":158,"h":158}
 },
 {
-	"filename": "oil_storage/1/instance83_1.png",
-	"frame": {"x":1504,"y":893,"w":118,"h":118},
+	"filename": "oil_storage/1/instance101_1.png",
+	"frame": {"x":292,"y":1539,"w":118,"h":118},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":8,"y":8,"w":118,"h":118},
 	"sourceSize": {"w":134,"h":134}
 },
 {
-	"filename": "town_hall/1/instance85_1.png",
-	"frame": {"x":1504,"y":492,"w":212,"h":218},
+	"filename": "town_hall/1/instance103_1.png",
+	"frame": {"x":2,"y":1358,"w":212,"h":218},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":27,"y":11,"w":212,"h":218},
 	"sourceSize": {"w":248,"h":248}
 },
 {
-	"filename": "troop_house/1/instance87_1.png",
-	"frame": {"x":1624,"y":996,"w":86,"h":84},
+	"filename": "troop_house/1/instance105_1.png",
+	"frame": {"x":2,"y":1960,"w":86,"h":84},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":8,"y":9,"w":86,"h":84},
 	"sourceSize": {"w":104,"h":104}
 },
 {
-	"filename": "wall/1/instance89_1.png",
-	"frame": {"x":1794,"y":274,"w":59,"h":94},
+	"filename": "wall/1/instance107_1.png",
+	"frame": {"x":131,"y":1252,"w":59,"h":94},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":25,"y":10,"w":59,"h":94},
 	"sourceSize": {"w":115,"h":116}
 },
 {
-	"filename": "wizard_tower/1/instance91_1.png",
-	"frame": {"x":1775,"y":833,"w":127,"h":147},
+	"filename": "wizard_tower/1/instance109_1.png",
+	"frame": {"x":2,"y":1204,"w":127,"h":147},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":17,"y":6,"w":127,"h":147},
@@ -167,6 +311,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2048,"h":2048},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:ed6d878d276e42ad324604fd46fc8de9$"
+	"smartupdate": "$TexturePacker:SmartUpdate:dc3ba86c49995fecfd9c14c11a623fa4$"
 }
 }

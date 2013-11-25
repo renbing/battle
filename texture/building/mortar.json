@@ -1,1 +1,1 @@
-{"id":"mortar","y":0,"framesInfo":[],"type":"[object mortar]","totalFrames":1,"index":0,"frames":[[{"id":"instance79","y":0,"framesInfo":[[-66,-85]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"mortar","framesInfo":[],"frames":[[{"id":"instance92","framesInfo":[[-66,-85]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object mortar]","index":0,"x":0}

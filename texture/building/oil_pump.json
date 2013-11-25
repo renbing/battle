@@ -1,1 +1,1 @@
-{"id":"oil_pump","y":0,"framesInfo":[],"type":"[object oil_pump]","totalFrames":1,"index":0,"frames":[[{"id":"instance81","y":0,"framesInfo":[[-82,-95]],"type":"[object Shape]","totalFrames":1,"index":0,"frames":[],"x":0}]],"x":0}
+{"id":"oil_pump","framesInfo":[],"frames":[[{"id":"instance99","framesInfo":[[-82,-95]],"frames":[],"totalFrames":1,"y":0,"type":"[object Shape]","index":0,"x":0}]],"totalFrames":1,"y":0,"type":"[object oil_pump]","index":0,"x":0}
