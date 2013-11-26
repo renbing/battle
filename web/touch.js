@@ -1,6 +1,7 @@
 
 var Touch = {
     init : function() {
+        var canvas = document.getElementById("gl-canvas");
         canvas.addEventListener("mousedown", handleMouseDown, true);
         canvas.addEventListener("mousemove", handleMouseMove, true);
         canvas.addEventListener("mouseup", handleMouseUp, true);

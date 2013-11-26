@@ -11,6 +11,8 @@ function mainLoop(passed) {
 
 function main() {
     trace('main');
+    test();
+    return;
 
     var uid = null;
     if( typeof(getUID) == 'function' ) {

@@ -5,10 +5,10 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <title>Giraffe</title>
-    <script src='framework/matrix4x4.js' type='text/javascript' charset='utf-8'></script>
-    <script src='framework/touch.js' type='text/javascript' charset='utf-8'></script>
-    <script src='framework/Render.js' type='text/javascript' charset='utf-8'></script>
-    <script src='framework/MovieClip.js' type='text/javascript' charset='utf-8'></script>
+    <script src='web/matrix4x4.js' type='text/javascript' charset='utf-8'></script>
+    <script src='web/touch.js' type='text/javascript' charset='utf-8'></script>
+    <script src='web/Render.js' type='text/javascript' charset='utf-8'></script>
+    <script src='web/MovieClip.js' type='text/javascript' charset='utf-8'></script>
 <%
         string []jss = File.ReadAllText(Server.MapPath(".") + "\\index.js").Split('\n');
         foreach( string js in jss ) {

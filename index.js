@@ -7,7 +7,7 @@ framework/tween.js
 framework/sound.js
 framework/resource.js
 framework/texture.js
-text.js
+framework/text.js
 model.js
 view/window/shopBuyListPanel.js
 view/window/shopListPanel.js
