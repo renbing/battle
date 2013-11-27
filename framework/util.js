@@ -34,12 +34,23 @@ String.prototype.firstWordCapitalize = function() {
 		return m.toUpperCase();
 	});
 }
-
-function getTime() {
-    return Math.round(+(new Date()) / 1000);
+function Loader(onAllLoad) {
+    this.tasks = [];
+    this.onAllLoad = onAllLoad;
 }
 
-function getDate() {
-    var now = new Date();
-    return now.getFullYear() * 10000 + now.getMonth() * 100 + now.getDate();
-}
+Loader.prototype = {
+    addLoad: function (task) {
+        this.tasks.push(task);
+    },
+
+    onLoad: function (task) {
+        var index = this.tasks.indexOf(task);
+        if (index >= 0) {
+            this.tasks.splice(index, 1);
+            if (this.tasks.length == 0) {
+                this.onAllLoad && this.onAllLoad();
+            }
+        }
+    },
+};
