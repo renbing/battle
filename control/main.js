@@ -1,6 +1,5 @@
 var gModel,gScene;
 var gConfGlobal, gConfBuilding, gConfCharacter, gConfTownHall;
-var gNetManager;
 var gActionWindow;
 
 function mainLoop(passed) {
@@ -11,6 +10,9 @@ function mainLoop(passed) {
 
 function main() {
     trace('main');
+    initGlobal();
+
+
     test();
     return;
 
@@ -24,8 +26,7 @@ function main() {
         return;
     }
 
-    gNetManager = new NetManager(uid);
-    gNetManager.call('user','login', {}, function(resp){
+    gNetMgr.call('user','login', {}, function(resp){
         if( resp.data.user == null ) {
             User._id = uid;
             gNetManager.call('user', 'save', {'user':User}, function(resp){
@@ -81,7 +82,8 @@ function onPinch(scale){
 // -----------------------测试用---------------------------
 
 function test() {
-    resourceManager.add('texture/cubetexture.png', 'image');
+    //resourceManager.add('texture/cubetexture.png', 'image');
+    resourceManager.add('texture/7.png', 'image', "masked");
     resourceManager.load(onTestLoad);
 }
 
@@ -90,7 +92,7 @@ function onTestLoad() {
     soundManager.playBackground('music/home_music.mp3');
     //soundManager.playEffect('music/winwinwin.mp3');
     
-    var image = resourceManager.get('texture/cubetexture.png');
+    var image = resourceManager.get('texture/7.png');
     var text = new TextField();
     //text.text = '我们我们我们我们我们我们我们我们我们';
     //text.height = 32;
@@ -109,11 +111,11 @@ function onTestLoad() {
         trace('bitmap taped');
     });
     stage.addChild(bitmap);
-    stage.addChild(bitmap3);
     stage.addChild(bitmap2);
+    //stage.addChild(bitmap3);
     
-    Tween.move(bitmap, Tween.BACK_EASE_IN, 3, 300, 100, 1)
-        .seqMove(bitmap, Tween.BACK_EASE_IN, 3, 0, 100, 0);
+    //Tween.move(bitmap, Tween.BACK_EASE_IN, 3, 300, 100, 1)
+    //    .seqMove(bitmap, Tween.BACK_EASE_IN, 3, 0, 100, 0);
 
     /*
     Timer.setTimeout(function(){

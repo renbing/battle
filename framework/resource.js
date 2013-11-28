@@ -111,7 +111,8 @@ ResourceManager.prototype = {
                         loadProcessor.loadSuccess();
                     };
                     this.mask[path] = maskImg;
-                    maskImg.src = path.replace("\.png", "_a\.png");
+                    //maskImg.src = path.replace("\.png", "_a\.png");
+                    maskImg.src = path.replace("\.png", "_a\.jpg");
                 }
             }else{
                 var pool = this.pool;
