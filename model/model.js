@@ -92,7 +92,7 @@ Model.prototype = {
         for( var key in User ) {
             user[key] = this[key];
         }
-        gNetManager.call('user', 'save', {'user':user}, function(resp){
+        gNetMgr.call('user', 'save', {'user':user}, function(resp){
             if( resp.code != 0 ) {
                 trace('user.save error');
             }else{

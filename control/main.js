@@ -1,6 +1,5 @@
 var gModel,gScene;
 var gConfGlobal, gConfBuilding, gConfCharacter, gConfTownHall;
-var gNetManager;
 var gActionWindow;
 
 function mainLoop(passed) {
@@ -11,6 +10,9 @@ function mainLoop(passed) {
 
 function main() {
     trace('main');
+    initGlobal();
+
+
     test();
     return;
 
@@ -24,8 +26,7 @@ function main() {
         return;
     }
 
-    gNetManager = new NetManager(uid);
-    gNetManager.call('user','login', {}, function(resp){
+    gNetMgr.call('user','login', {}, function(resp){
         if( resp.data.user == null ) {
             User._id = uid;
             gNetManager.call('user', 'save', {'user':User}, function(resp){
