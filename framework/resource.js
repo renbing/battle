@@ -48,19 +48,21 @@ function ResourceManager() {
 
 ResourceManager.prototype = {
 
-    add: function(path, type, args){
+    add: function(folder, file, args) {
+        var path = folder + "/" + file;
         if( path in this.pool ) {
             return;
         }
 
-        this.underLoad[path] = {"type":type, "data":null, "args":args};
+        this.underLoad[path] = {"data":null, "args":args};
     },
 
-    remove: function(path) {
-        delete this.pool[path];
+    remove: function(folder, file) {
+        delete this.pool[folder + "/" + file];
     },
 
-    get: function(path) {
+    get: function(folder, file) {
+        var path = folder + "/" + file;
         var obj = this.pool[path];
         if( !obj ) {
             trace("no resource:" + path);

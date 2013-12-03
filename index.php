@@ -24,10 +24,13 @@
         }
     }
     findJS('web');
+    $webJS = count($jss);
     findJS('framework');
     findJS('model');
     findJS('view');
     findJS('control');
+
+    file_put_contents("index.js", join("\n", array_slice($jss, $webJS)));
 
     foreach( $jss as $js ) {
         $js = trim($js);
