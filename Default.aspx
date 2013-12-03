@@ -119,11 +119,11 @@
         };
     </script>
 </head>
-<body style="margin-left:20px" onload="webGLStart()">
+<body style="margin-left:20px" onload="gWeb.webGLStart()">
     <div style="margin-left:300px">
     <span>FPS:</span><span id="fps">60</span>
     <span>分辨率:</span>
-    <select id="size" onchange="changeSize();">
+    <select id="size" onchange="gWeb.changeSize();">
         <%
             foreach( string size in sizes ) {
                 string selected = "";

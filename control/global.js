@@ -7,7 +7,7 @@ var gSoundMgr = null;
 
 function initGlobal()
 {
-    gResourceMgr = new ResouceManager();
+    gResourceMgr = new ResourceManager();
     gTextureMgr = new TextureManager();
     gSoundMgr = new SoundManager();
 

@@ -1,6 +1,5 @@
 framework/ajax.js
 framework/astar.js
-framework/csv.js
 framework/event.js
 framework/resource.js
 framework/sound.js
@@ -27,5 +26,6 @@ view/window/trainTroopPanel.js
 view/window/upgradePanel.js
 view/window/window.js
 view/world.js
+control/global.js
 control/main.js
 control/net.js

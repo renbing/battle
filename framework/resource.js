@@ -42,97 +42,112 @@ LoadProcessor.prototype = {
 
 function ResourceManager() {
     this.pool = {};
-    this.mask = {};
-    this.underLoad = {};
+    this.args = {};
+    this.underLoad = [];
 }
 
 ResourceManager.prototype = {
+    _getPath : function(folder, file) {
+        return folder + "/" + file;
+    },
 
-    add: function(folder, file, args) {
-        var path = folder + "/" + file;
-        if( path in this.pool ) {
-            return;
+    _getFileType : function(path) {
+        if( path.endWith('.json') ) {
+            return 'json';
+        }else if( path.endWith('.png') || path.endWith('.jpg') ) {
+            return 'image';
         }
 
-        this.underLoad[path] = {"data":null, "args":args};
+        return 'text';
+    },
+
+    add: function(folder, file, args) {
+        var path = this._getPath(folder, file);
+        this.underLoad.push(path);
+        if( args ) {
+            this.args[path] = args;
+        }
     },
 
     remove: function(folder, file) {
-        delete this.pool[folder + "/" + file];
+        var path = this._getPath(folder, file);
+        delete this.pool[path];
+        delete this.args[path];
     },
 
     get: function(folder, file) {
-        var path = folder + "/" + file;
+        var path = this._getPath(folder, file);
         var obj = this.pool[path];
         if( !obj ) {
             trace("no resource:" + path);
-            return null;
         }
 
-        if( obj.type == "image" && obj.args == "masked" ) {
-            // PNG -> JPG + mask PNG
-            if( path in this.mask ) {
-                obj.data = this.mergeImageMask(obj.data, this.mask[path]);
-                delete this.mask[path];
-            }
-        }
-        if( obj.type == "image" && !obj.data.hasOwnProperty("texture") ) {
-            this.createTexture && this.createTexture(obj.data);            
-        }
-
-        return obj.data;
+        return obj;
     },
 
     load: function(onAllLoad, onLoad) {
         var loadProcessor = new LoadProcessor(onAllLoad, onLoad);
-        for(var path in this.underLoad) {
-            this.pool[path] = this.underLoad[path];
-            var type = this.pool[path].type;
-
+        for( var i=0; i<this.underLoad.length; i++ ) {
             loadProcessor.deliveryPackage(); 
-            if(type == "image") {
-                var img = new Image();
-                img.onload = function() {
-                    loadProcessor.loadSuccess();
-                };
-                this.pool[path].data = img;
-                
-                if( this.pool[path].args == "masked" ) {
-                    img.src = path.replace("\.png", "\.jpg");
-                } else {
-                    img.src = path;
-                }
-                
-                if( this.pool[path].args == "masked" ) {
-                    //加载对应的Mask图
-                    loadProcessor.deliveryPackage(); 
+            var path = this.underLoad[i];
+            if( this._getFileType(path) == 'image' && this.args[path] == 'mask' ) {
+                loadProcessor.deliveryPackage(); 
+            }
+        }
+    
+        var pool = this.pool;
+        for( var i=0; i<this.underLoad.length; i++ ) {
+            var path = this.underLoad[i];
+            if( this._getFileType(path) == 'image' ) {
+                var isMask = (path in this.args);
+                if( isMask && (Device.name == 'webgl') ) {
                     var maskImg = new Image();
+                    maskImg._src = path;
                     maskImg.onload = function(){
-                        loadProcessor.loadSuccess();
+                        var img = new Image();
+                        img.mask = isMask;
+                        img.onload = function(){
+                            pool[maskImg._src] = gWeb.mergeImageMask(img, maskImg);
+                            gWeb.createTexture(pool[maskImg._src]);
+                            loadProcessor.loadSuccess();
+                        };
+                        img.src = maskImg._src.replace('\.png', '\.jpg');
                     };
-                    this.mask[path] = maskImg;
-                    //maskImg.src = path.replace("\.png", "_a\.png");
-                    maskImg.src = path.replace("\.png", "_a\.jpg");
-                }
-            }else{
-                var pool = this.pool;
-                Ajax.get(path, function(path, type) {
-                    return function(status, url, xhr){
-                        if(type == "json") {
-                            pool[path].data = JSON.parse(xhr.responseText);
+                    maskImg.src = path.replace('\.png', '_a\.jpg');
+                }else{
+                    var img = new Image();
+                    img.mask = isMask;
+                    img.onload = function(){
+                        if( Device.name == 'webgl' ) {
+                            pool[img.src] = gWeb.createTexture(img);
                         }else{
-                            pool[path].data = xhr.responseText;
+                            pool[img.src] = img;
                         }
                         loadProcessor.loadSuccess();
                     };
-                }(path, type));
+                    img.src = path;
+                }
+            }else{
+                File.readFile(path, function(err, data, _path){
+                    if( err ) {
+                        trace('readFile '+_path + ' fail');
+                    }else{
+                        if( _path.endWith('.json') ) {
+                            try{
+                                data = JSON.parse(data);
+                            }catch(e){
+                                data = null;
+                                trace('paseJSON '+_path + 'fail');
+                            }
+                        }
+                        pool[_path] = data;
+                    }
+                });
+                loadProcessor.loadSuccess();
             }
         }
-        
-        // 注意下面两行代码执行顺序不能交换,因为存在全部加载都不是异步的情况
-        this.underLoad = {};
+        this.underLoad = [];
+
         loadProcessor.start();
     },
 };
-
-resourceManager = new ResourceManager();

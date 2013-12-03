@@ -21,11 +21,40 @@ function extend(Child, Parent) {
     Child.prototype.constructor = Child;
 }
 
-String.prototype.format = function()
-{
+Array.prototype.sum = function() {
+    var total = 0;
+    for(var i=0; i<this.length; i++) {
+        if( !isNaN(this[i]) ) {
+            total += +this[i];
+        }
+    }
+
+    return total;
+}
+
+Array.prototype.remove = function(item) {
+    var index = this.indexOf(item);
+
+    if( index >= 0){
+        this.splice(index, 1);
+    }
+}
+
+String.prototype.startWith = function(prefix) {
+    if( !prefix || !this.length || this[0] != prefix[0] ) return false;
+    return (this.substr(0, prefix.length) == prefix);
+}
+
+String.prototype.endWith = function(suffix) {
+    if( !suffix || !this.length || suffix.length > this.length) return false;
+    return (this.substr(this.length - suffix.length) == suffix);
+}
+
+String.prototype.format = function() {
     var args = arguments;
-    return this.replace(/\{(\d+)\}/g, function(m,i){
-        return args[i];
+    var i = 0;
+    return this.replace(/%s/g, function(m){
+        return args[i++] || "%s";
     });
 }
 
@@ -34,6 +63,7 @@ String.prototype.firstWordCapitalize = function() {
 		return m.toUpperCase();
 	});
 }
+
 function Loader(onAllLoad) {
     this.tasks = [];
     this.onAllLoad = onAllLoad;

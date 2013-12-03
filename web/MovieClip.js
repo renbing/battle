@@ -22,7 +22,6 @@ function TextField() {
 
 TextField.prototype = {
     render: function() {
-        //var canvas = document.getElementById("canvas");
         var canvas = document.createElement("canvas");
         canvas.width = this.width;
         canvas.height = this.height;
@@ -34,11 +33,41 @@ TextField.prototype = {
         if( this.align == "center" ) {
             dx = this.width / 2 ; 
         }
+        //ctx.fillRect(0, 0, this.width, this.height);
         ctx.fillStyle = this.color;
-        ctx.fillText(this.text, dx, parseInt(this.font));
+        var textHeight = parseInt(this.font);
+        
+        var lineCount = 1;
+        var segs = this.text.split('\n');
+        for( var i=0; i<segs.length; i++ ) {
+            var lines = this._wrapText(ctx, segs[i], this.width);
+            for( var j=0; j<lines.length; j++ ) {
+                ctx.fillText(lines[j], dx, textHeight*lineCount, this.width);
+                lineCount += 1;
+            }
+        }
 
-        resourceManager.createTexture(this, canvas);
-    }
+        gWeb.createTexture(this, canvas);
+    },
+
+    _wrapText : function(ctx, text, maxWidth){
+        var len = 0;
+        var lastBreak = 0;
+        var lines = [];
+        for( var i=0; i<text.length; i++ ) {
+            var charLen = ctx.measureText(text[i]).width;
+            len += charLen;
+            if( len > maxWidth ) {
+                lines.push(text.substr(lastBreak, i-lastBreak));
+                len = charLen;
+                lastBreak = i;
+            }
+        }
+
+        lines.push(text.substr(lastBreak));
+
+        return lines;
+    },
 };
 
 function DisplayObject() {

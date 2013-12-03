@@ -12,7 +12,6 @@ function main() {
     trace('main');
     initGlobal();
 
-
     test();
     return;
 
@@ -83,28 +82,26 @@ function onPinch(scale){
 
 function test() {
     //resourceManager.add('texture/cubetexture.png', 'image');
-    resourceManager.add('texture/7.png', 'image', "masked");
-    resourceManager.load(onTestLoad);
+    gResourceMgr.add('texture', '7.png', 'masked');
+    gResourceMgr.load(onTestLoad);
 }
 
 function onTestLoad() {
     trace('start');
-    soundManager.playBackground('music/home_music.mp3');
+    //soundManager.playBackground('music/home_music.mp3');
     //soundManager.playEffect('music/winwinwin.mp3');
     
-    var image = resourceManager.get('texture/7.png');
+    var image = gResourceMgr.get('texture', '7.png');
     var text = new TextField();
-    //text.text = '我们我们我们我们我们我们我们我们我们';
-    //text.height = 32;
+    text.text = '在纵横交错\n的溪河上，人们根据自己的爱好和河床的宽度大小和大小12';
+    text.height = 256;
     text.width = 256;
     //text.height = 256;
     text.render();
 
     var bitmap = new Bitmap(image, 'bitmap');
     var bitmap2 = new Bitmap(text, 'bitmap2');
-    var bitmap3 = new Bitmap(image, 'bitmap3');
-    bitmap3.y = 100;
-    bitmap3.x = 200;
+
     bitmap2.y = 150;
     bitmap.y = 100;
     bitmap.addEventListener(Event.TAP, function(e) {
@@ -112,7 +109,6 @@ function onTestLoad() {
     });
     stage.addChild(bitmap);
     stage.addChild(bitmap2);
-    //stage.addChild(bitmap3);
     
     //Tween.move(bitmap, Tween.BACK_EASE_IN, 3, 300, 100, 1)
     //    .seqMove(bitmap, Tween.BACK_EASE_IN, 3, 0, 100, 0);
