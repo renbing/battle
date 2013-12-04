@@ -70,4 +70,4 @@ SoundManager.prototype = {
     },
 };
 
-var soundManager = new SoundManager();
+var gSoundMgr = new SoundManager();

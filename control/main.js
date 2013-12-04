@@ -12,7 +12,7 @@ function main() {
     trace('main');
     initGlobal();
 
-    test();
+    testTexture();
     return;
 
     var uid = null;
@@ -32,12 +32,12 @@ function main() {
                 if( resp.code != 0 ) {
                     trace('user.save error');
                 }else{
-                	textureManager.load(gConfig.mc, onResourceLoad);
+                	gTextureMgr.load(gConfig.mc, onResourceLoad);
                 }
             });
         }else{
             User = resp.data.user;
-            textureManager.load(gConfig.mc, onResourceLoad);
+            gTextureMgr.load(gConfig.mc, onResourceLoad);
         }
     });
 
@@ -81,8 +81,7 @@ function onPinch(scale){
 // -----------------------测试用---------------------------
 
 function test() {
-    //resourceManager.add('texture/cubetexture.png', 'image');
-    gResourceMgr.add('texture', '7.png', 'masked');
+    gResourceMgr.add('texture', '7.png');
     gResourceMgr.load(onTestLoad);
 }
 
@@ -96,7 +95,6 @@ function onTestLoad() {
     text.text = '在纵横交错\n的溪河上，人们根据自己的爱好和河床的宽度大小和大小12';
     text.height = 256;
     text.width = 256;
-    //text.height = 256;
     text.render();
 
     var bitmap = new Bitmap(image, 'bitmap');
@@ -110,8 +108,8 @@ function onTestLoad() {
     stage.addChild(bitmap);
     stage.addChild(bitmap2);
     
-    //Tween.move(bitmap, Tween.BACK_EASE_IN, 3, 300, 100, 1)
-    //    .seqMove(bitmap, Tween.BACK_EASE_IN, 3, 0, 100, 0);
+    Tween.move(bitmap, Tween.BACK_EASE_IN, 3, 300, 100, 1)
+        .seqMove(bitmap, Tween.BACK_EASE_IN, 3, 0, 100, 0);
 
     /*
     Timer.setTimeout(function(){
@@ -127,4 +125,49 @@ function onTestLoad() {
         trace('ajax get finished:' + status);
     });
     */
+}
+
+function testTexture() {
+    gTextureMgr.load(['ui'], onTestTextureLoad);
+}
+
+function onTestTextureLoad() {
+    var leftTop = gTextureMgr.createMovieClip('ui', 'left_top');
+
+    var middleTop = gTextureMgr.createMovieClip('ui', 'middle_top');
+    middleTop.x = Device.width/2;
+    middleTop.getChildByName('shop_btn1').addEventListener(Event.TAP, gotoShop);
+    middleTop.getChildByName('shop_btn2').addEventListener(Event.TAP, gotoShop);
+
+    var rightTop = gTextureMgr.createMovieClip('ui', 'right_top');
+    rightTop.x = Device.width;
+    rightTop.getChildByName('shop_btn').addEventListener(Event.TAP, gotoShop);
+    
+    var leftBottom = gTextureMgr.createMovieClip('ui', 'left_bottom');
+    leftBottom.y = Device.height;
+
+    leftBottom.getChildByName('battle').addEventListener(Event.TAP, gotoBattle);
+
+    var rightBottom = gTextureMgr.createMovieClip('ui', 'right_bottom');
+    rightBottom.x = Device.width;
+    rightBottom.y = Device.height;
+    rightBottom.getChildByName('shop').addEventListener(Event.TAP, gotoShop);
+
+    var uiView = new MovieClip('ui');
+
+    uiView.addChild(leftTop);
+    uiView.addChild(middleTop);
+    uiView.addChild(rightTop);
+    uiView.addChild(leftBottom);
+    uiView.addChild(rightBottom);
+
+    stage.addChild(uiView);
+
+    function gotoShop() {
+        trace('gotoShop');
+    }
+
+    function gotoBattle() {
+        trace('gotoBattle');
+    }
 }

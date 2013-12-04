@@ -16,7 +16,7 @@ LoadProcessor.prototype = {
     },
 
     loadSuccess: function() {
-        this.loadedCount++; 
+        this.loadedCount += 1; 
         this.onLoaded && this.onLoaded();
 
         if( this.started ) {
@@ -117,12 +117,12 @@ ResourceManager.prototype = {
                 }else{
                     var img = new Image();
                     img.mask = isMask;
+                    img._src = path;
                     img.onload = function(){
                         if( Device.name == 'webgl' ) {
-                            pool[img.src] = gWeb.createTexture(img);
-                        }else{
-                            pool[img.src] = img;
+                            gWeb.createTexture(img);
                         }
+                        pool[img._src] = img;
                         loadProcessor.loadSuccess();
                     };
                     img.src = path;
@@ -141,9 +141,9 @@ ResourceManager.prototype = {
                             }
                         }
                         pool[_path] = data;
+                        loadProcessor.loadSuccess();
                     }
                 });
-                loadProcessor.loadSuccess();
             }
         }
         this.underLoad = [];
@@ -151,3 +151,5 @@ ResourceManager.prototype = {
         loadProcessor.start();
     },
 };
+
+var gResourceMgr = new ResourceManager();
